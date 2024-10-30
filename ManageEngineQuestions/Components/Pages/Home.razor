@@ -1,9 +1,36 @@
 ﻿@page "/"
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
 
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-6">
-            <div class="col">col2</div>
+            <div class="col">
+
+                <h1 class="text-center">Manage Engine Questionnaire</h1>
+                <p class="text-center">Choose the product below</p>
+
+                <div class="d-flex justify-content-center align-items-center">
+                    <select @bind="selectedOption" class="form-select me-2">
+                        <option value="/sdp">ServiceDesk Plus</option>
+                        <option value="/ec">Endpoint Central</option>
+                    </select>
+                    <button @onclick="Navigate" class="btn btn-primary">Go</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
+@code {
+    private string selectedOption = "/sdp";
+
+    private void Navigate()
+    {
+        Console.WriteLine($"Navigating to: {selectedOption}"); // Debugging statement
+        if (!string.IsNullOrEmpty(selectedOption))
+        {
+            NavigationManager.NavigateTo(selectedOption);
+        }
+    }
+}
