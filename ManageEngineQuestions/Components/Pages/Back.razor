@@ -1,0 +1,17 @@
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <button @onclick="BackToHome" class="btn btn-primary">Back to home</button>
+        </div>
+    </div>
+    
+</div>
+
+@code {
+    public void BackToHome()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+}

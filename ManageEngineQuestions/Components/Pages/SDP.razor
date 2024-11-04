@@ -1,13 +1,35 @@
-@* @page "/sdp" *@
-
+@page "/sdp"
+@rendermode InteractiveServer
+<Back />
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="col">
-
-                SDP
-                
+                <p class="text-center">Choose your edition</p>
+                <div class="d-flex justify-content-center align-items-center">
+                    <select @bind="option" class="form-select me2">
+                        <option value="On-Prem">On-Prem</option>
+                        <option value="Cloud">Cloud</option>
+                    </select>
+                    
+                </div>
+                @if (option == "On-Prem")
+                    {
+                        <div>
+                            your choice is On-Prem
+                        </div>
+                    }
+                    else
+                    {
+                        <div>
+                            your choice is Cloud
+                        </div>
+                    }
             </div>
         </div>
     </div>
 </div>
+
+@code {
+    private string option = "On-Prem";
+}
