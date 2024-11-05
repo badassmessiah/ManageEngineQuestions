@@ -10,9 +10,9 @@
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="col">
-                <p class="text-center">Choose your edition</p>
+                <p class="text-center">Choose ServiceDesk Hosting Model</p>
                 <div class="d-flex justify-content-center align-items-center">
-                    <select @bind="option" class="form-select me2">
+                    <select @bind="option" @bind:after="LoadQuestions" class="form-select me2">
                         <option value="On-Prem">On-Prem</option>
                         <option value="Cloud">Cloud</option>
                     </select>
@@ -23,7 +23,7 @@
                     <div class="mt-4">
                         @foreach (var question in questions)
                         {
-                            <div class="row mb-3">
+                            <div class="row mb-3 align-items-center">
                                 <div class="col-md-4">
                                     <strong>@question.Question</strong>
                                 </div>
@@ -56,6 +56,8 @@
                                 <div class="col-md-4">
                                     <small>
                                         @string.Join(" ", question.Explanation.Split(' ').Take(6))...
+                                        <button class="btn btn-link btn-sm"
+                                            @onclick="@(() => ShowExplanation(question.Explanation))">Learn More</button>
                                     </small>
                                 </div>
                             </div>
@@ -79,18 +81,79 @@
 
     protected override async Task OnInitializedAsync()
     {
+        await LoadQuestions();
+
+    }
+
+    private async Task LoadQuestions()
+    {
         try
         {
             var baseUri = NavigationManager.BaseUri;
-            var jsonUri = $"{baseUri}data/sdp.json";
+            var jsonFile = option == "On-Prem" ? "sdp-on-prem.json" : "sdp-cloud.json";
+            var jsonUri = $"{baseUri}data/{jsonFile}";
             var json = await Http.GetStringAsync(jsonUri);
             questions = JsonSerializer.Deserialize<List<QuestionEntity>>(json) ?? new List<QuestionEntity>();
+
+            foreach (var question in questions)
+            {
+                if (question.Type == QuestionType.Dropdown &&
+                string.IsNullOrEmpty(question.TextAnswer) &&
+                question.DropdownOptions.Any())
+                {
+                    question.TextAnswer = question.DropdownOptions.First();
+                }
+            }
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
         }
+    }
+}
+
+@if (showModal)
+{
+    <div class="modal show" style="display: block" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Details</h5>
+                    <button type="button" class="btn-close" @onclick="CloseModal"></button>
+                </div>
+                <div class="modal-body">
+                    @((MarkupString)FormatExplanationWithLinks(selectedExplanation))
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop show"></div>
+}
+
+@code {
+    private bool showModal = false;
+    private string selectedExplanation = "";
+
+    private void ShowExplanation(string explanation)
+    {
+        selectedExplanation = explanation;
+        showModal = true;
+    }
+
+    private void CloseModal()
+    {
+        showModal = false;
+        selectedExplanation = "";
+    }
 
 
+    private string FormatExplanationWithLinks(string text)
+    {
+        var urlPattern = @"(https?:\/\/[^\s]+)";
+        return System.Text.RegularExpressions.Regex.Replace(
+        text,
+        urlPattern,
+        match => $"<a href=\"{match.Value}\" target=\"_blank\">{match.Value}</a>"
+        );
     }
 }
