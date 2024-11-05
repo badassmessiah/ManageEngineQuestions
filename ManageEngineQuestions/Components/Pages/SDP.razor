@@ -37,7 +37,8 @@
                                         @foreach (var answer in question.CheckboxAnswers)
                                         {
                                             <div class="form-check">
-                                                <input type="checkbox" class="form-check-input" value="@answer" />
+                                                <input type="radio" name="question_@(questions.IndexOf(question))"
+                                                    class="form-check-input" value="@answer" />
                                                 <label class="form-check-label">@answer</label>
                                             </div>
                                         }
@@ -53,7 +54,9 @@
                                     }
                                 </div>
                                 <div class="col-md-4">
-                                    <small>@question.Explanation</small>
+                                    <small>
+                                        @string.Join(" ", question.Explanation.Split(' ').Take(6))...
+                                    </small>
                                 </div>
                             </div>
                         }
