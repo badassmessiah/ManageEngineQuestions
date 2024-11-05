@@ -21,6 +21,6 @@
       "Type": "Dropdown",
       "TextAnswer": "",
       "CheckboxAnswers": [],
-      "DropdownOptions": ["Yes", "No"]
+      "DropdownOptions": ["No", "Yes"]
     }
   ]

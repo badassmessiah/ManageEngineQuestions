@@ -21,7 +21,7 @@
                 @if (option == "On-Prem")
                 {
                     <div class="mt-4">
-                        @foreach (var question in questions)
+                        @foreach (var question in baseQuestions)
                         {
                             <div class="row mb-3 align-items-center">
                                 <div class="col-md-4">
@@ -37,7 +37,7 @@
                                         @foreach (var answer in question.CheckboxAnswers)
                                         {
                                             <div class="form-check">
-                                                <input type="radio" name="question_@(questions.IndexOf(question))"
+                                                <input type="radio" name="question_@(baseQuestions.IndexOf(question))"
                                                     class="form-check-input" value="@answer" />
                                                 <label class="form-check-label">@answer</label>
                                             </div>
@@ -45,12 +45,25 @@
                                     }
                                     else if (question.Type == QuestionType.Dropdown)
                                     {
-                                        <select class="form-select" @bind="question.TextAnswer">
-                                            @foreach (var option in question.DropdownOptions)
-                                            {
-                                                <option value="@option">@option</option>
-                                            }
-                                        </select>
+                                        @if (question.Question.Contains("Enterprise Service Management"))
+                                        {
+                                            <select class="form-select" @bind="question.TextAnswer"
+                                                @bind:after="@(async () => await HandleESMAnswer(question.TextAnswer))">
+                                                @foreach (var opt in question.DropdownOptions)
+                                                {
+                                                    <option value="@opt">@opt</option>
+                                                }
+                                            </select>
+                                        }
+                                        else
+                                        {
+                                            <select class="form-select" @bind="question.TextAnswer">
+                                                @foreach (var opt in question.DropdownOptions)
+                                                {
+                                                    <option value="@opt">@opt</option>
+                                                }
+                                            </select>
+                                        }
                                     }
                                 </div>
                                 <div class="col-md-4">
@@ -60,6 +73,69 @@
                                             @onclick="@(() => ShowExplanation(question.Explanation))">Learn More</button>
                                     </small>
                                 </div>
+                            </div>
+                        }
+
+                        @if (showESMQuestions)
+                        {
+                            <div class="mt-4">
+                                <button class="btn btn-primary mb-3" @onclick="AddESMInstance">
+                                    Add ESM Instance
+                                </button>
+
+                                @foreach (var instance in esmInstances)
+                                {
+                                    <div class="card mb-3">
+                                        <div class="card-header">
+                                            <h5>@instance.Name</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            @foreach (var question in instance.Questions)
+                                            {
+                                                <div class="row mb-3 align-items-center">
+                                                    <div class="col-md-4">
+                                                        <strong>@question.Question</strong>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        @if (question.Type == QuestionType.Text)
+                                                        {
+                                                            <input type="text" class="form-control" @bind="question.TextAnswer" />
+                                                        }
+                                                        else if (question.Type == QuestionType.Checkbox)
+                                                        {
+                                                            @foreach (var answer in question.CheckboxAnswers)
+                                                            {
+                                                                <div class="form-check">
+                                                                    <input type="radio"
+                                                                        name="question_@($"{esmInstances.IndexOf(instance)}_{instance.Questions.IndexOf(question)}")"
+                                                                        class="form-check-input" value="@answer" />
+                                                                    <label class="form-check-label">@answer</label>
+                                                                </div>
+                                                            }
+                                                        }
+                                                        else if (question.Type == QuestionType.Dropdown)
+                                                        {
+                                                            <select class="form-select" @bind="question.TextAnswer">
+                                                                @foreach (var opt in question.DropdownOptions)
+                                                                {
+                                                                    <option value="@opt">@opt</option>
+                                                                }
+                                                            </select>
+                                                        }
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <small>
+                                                            @string.Join(" ", question.Explanation.Split(' ').Take(6))...
+                                                            <button class="btn btn-link btn-sm"
+                                                                @onclick="@(() => ShowExplanation(question.Explanation))">Learn
+                                                                More</button>
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                }
                             </div>
                         }
                     </div>
@@ -77,7 +153,9 @@
 
 @code {
     private string option = "On-Prem";
-    private List<QuestionEntity> questions = new List<QuestionEntity>();
+    private List<QuestionEntity> baseQuestions = new();
+    private List<ESMInstance> esmInstances = new();
+    private bool showESMQuestions = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -90,24 +168,66 @@
         try
         {
             var baseUri = NavigationManager.BaseUri;
-            var jsonFile = option == "On-Prem" ? "sdp-on-prem.json" : "sdp-cloud.json";
+            var jsonFile = option == "On-Prem" ? "sdp-on-prem-base.json" : "sdp-cloud.json";
             var jsonUri = $"{baseUri}data/{jsonFile}";
             var json = await Http.GetStringAsync(jsonUri);
-            questions = JsonSerializer.Deserialize<List<QuestionEntity>>(json) ?? new List<QuestionEntity>();
+            baseQuestions = JsonSerializer.Deserialize<List<QuestionEntity>>(json) ?? new();
 
-            foreach (var question in questions)
-            {
-                if (question.Type == QuestionType.Dropdown &&
-                string.IsNullOrEmpty(question.TextAnswer) &&
-                question.DropdownOptions.Any())
-                {
-                    question.TextAnswer = question.DropdownOptions.First();
-                }
-            }
+            SetDropdownDefaults(baseQuestions);
+
+            esmInstances.Clear();
+            showESMQuestions = false;
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
+        }
+    }
+
+    private async Task HandleESMAnswer(string answer)
+    {
+        if (answer == "Yes")
+        {
+            showESMQuestions = true;
+            await AddESMInstance();
+        }
+        else
+        {
+            showESMQuestions = false;
+            esmInstances.Clear();
+        }
+    }
+
+    private async Task AddESMInstance()
+    {
+        var baseUri = NavigationManager.BaseUri;
+        var instanceJson = await Http.GetStringAsync($"{baseUri}data/sdp-on-prem-esm-instance.json");
+        var instanceQuestions = JsonSerializer.Deserialize<List<QuestionEntity>>(instanceJson) ?? new();
+
+        SetDropdownDefaults(instanceQuestions);
+
+        esmInstances.Add(new ESMInstance
+            {
+                Name = $"Instance {esmInstances.Count + 1}",
+                Questions = instanceQuestions
+            });
+    }
+
+    private void RemoveESMInstance(ESMInstance instance)
+    {
+        esmInstances.Remove(instance);
+    }
+
+    private void SetDropdownDefaults(List<QuestionEntity> questions)
+    {
+        foreach (var question in questions)
+        {
+            if (question.Type == QuestionType.Dropdown &&
+            string.IsNullOrEmpty(question.TextAnswer) &&
+            question.DropdownOptions.Any())
+            {
+                question.TextAnswer = question.DropdownOptions.First();
+            }
         }
     }
 }

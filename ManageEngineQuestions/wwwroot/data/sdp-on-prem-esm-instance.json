@@ -1,0 +1,16 @@
+[
+    {
+      "Question": "Which edition of ServiceDesk Plus do you need?",
+      "Explanation": "...",
+      "Type": "Dropdown",
+      "TextAnswer": "",
+      "DropdownOptions": ["Standard", "Professional", "Enterprise"]
+    },
+    {
+      "Question": "Do you require Service Catalog add-on?",
+      "Explanation": "...",
+      "Type": "Dropdown",
+      "TextAnswer": "",
+      "DropdownOptions": ["Yes", "No"]
+    }
+]
