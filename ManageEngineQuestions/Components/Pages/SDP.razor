@@ -3,8 +3,6 @@
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 
-
-
 <Back />
 <div class="container">
     <div class="row justify-content-center">
@@ -16,7 +14,6 @@
                         <option value="On-Prem">On-Prem</option>
                         <option value="Cloud">Cloud</option>
                     </select>
-
                 </div>
                 @if (option == "On-Prem")
                 {
@@ -79,15 +76,25 @@
                         @if (showESMQuestions)
                         {
                             <div class="mt-4">
-                                <button class="btn btn-primary mb-3" @onclick="AddESMInstance">
-                                    Add ESM Instance
-                                </button>
-
                                 @foreach (var instance in esmInstances)
                                 {
                                     <div class="card mb-3">
-                                        <div class="card-header">
-                                            <h5>@instance.Name</h5>
+                                        <div class="card-header d-flex justify-content-between align-items-center">
+                                            <input type="text" class="form-control" @bind="instance.Name"
+                                                placeholder="Enter instance name" />
+                                            <button class="btn" @onclick="@(() => RemoveESMInstance(instance))">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor"
+                                                    class="bi bi-dash" viewBox="0 0 16 16">
+                                                    <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8" />
+                                                </svg>
+                                            </button>
+                                            <button class="btn" @onclick="AddESMInstance">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor"
+                                                    class="bi bi-plus" viewBox="0 0 16 16">
+                                                    <path
+                                                        d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+                                                </svg>
+                                            </button>
                                         </div>
                                         <div class="card-body">
                                             @foreach (var question in instance.Questions)
@@ -138,6 +145,58 @@
                                 }
                             </div>
                         }
+                        else
+                        {
+                            <div class="mt-4">
+                                <div class="card mb-3">
+                                    <div class="card-body" style="width: 100%;">
+                                        @foreach (var question in singleInstance.Questions)
+                                        {
+                                            <div class="row mb-3 align-items-center">
+                                                <div class="col-md-4">
+                                                    <strong>@question.Question</strong>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    @if (question.Type == QuestionType.Text)
+                                                    {
+                                                        <input type="text" class="form-control" @bind="question.TextAnswer" />
+                                                    }
+                                                    else if (question.Type == QuestionType.Checkbox)
+                                                    {
+                                                        @foreach (var answer in question.CheckboxAnswers)
+                                                        {
+                                                            <div class="form-check">
+                                                                <input type="radio"
+                                                                    name="question_@($"{singleInstance.Questions.IndexOf(question)}")"
+                                                                    class="form-check-input" value="@answer" />
+                                                                <label class="form-check-label">@answer</label>
+                                                            </div>
+                                                        }
+                                                    }
+                                                    else if (question.Type == QuestionType.Dropdown)
+                                                    {
+                                                        <select class="form-select" @bind="question.TextAnswer">
+                                                            @foreach (var opt in question.DropdownOptions)
+                                                            {
+                                                                <option value="@opt">@opt</option>
+                                                            }
+                                                        </select>
+                                                    }
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <small>
+                                                        @string.Join(" ", question.Explanation.Split(' ').Take(6))...
+                                                        <button class="btn btn-link btn-sm"
+                                                            @onclick="@(() => ShowExplanation(question.Explanation))">Learn
+                                                            More</button>
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        }
                     </div>
                 }
                 else
@@ -155,12 +214,12 @@
     private string option = "On-Prem";
     private List<QuestionEntity> baseQuestions = new();
     private List<ESMInstance> esmInstances = new();
+    private ESMInstance singleInstance = new();
     private bool showESMQuestions = false;
 
     protected override async Task OnInitializedAsync()
     {
         await LoadQuestions();
-
     }
 
     private async Task LoadQuestions()
@@ -177,6 +236,11 @@
 
             esmInstances.Clear();
             showESMQuestions = false;
+
+            // Load single instance questions
+            var instanceJson = await Http.GetStringAsync($"{baseUri}data/sdp-on-prem-esm-instance.json");
+            singleInstance.Questions = JsonSerializer.Deserialize<List<QuestionEntity>>(instanceJson) ?? new();
+            SetDropdownDefaults(singleInstance.Questions);
         }
         catch (Exception ex)
         {
@@ -189,7 +253,10 @@
         if (answer == "Yes")
         {
             showESMQuestions = true;
-            await AddESMInstance();
+            if (!esmInstances.Any())
+            {
+                await AddESMInstance();
+            }
         }
         else
         {
@@ -208,7 +275,7 @@
 
         esmInstances.Add(new ESMInstance
             {
-                Name = $"Instance {esmInstances.Count + 1}",
+                Name = "",
                 Questions = instanceQuestions
             });
     }
@@ -265,7 +332,6 @@
         showModal = false;
         selectedExplanation = "";
     }
-
 
     private string FormatExplanationWithLinks(string text)
     {
