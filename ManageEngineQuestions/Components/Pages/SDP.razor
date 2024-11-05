@@ -1,5 +1,10 @@
 @page "/sdp"
 @rendermode InteractiveServer
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+
+
 <Back />
 <div class="container">
     <div class="row justify-content-center">
@@ -11,20 +16,55 @@
                         <option value="On-Prem">On-Prem</option>
                         <option value="Cloud">Cloud</option>
                     </select>
-                    
+
                 </div>
                 @if (option == "On-Prem")
-                    {
-                        <div>
-                            your choice is On-Prem
-                        </div>
-                    }
-                    else
-                    {
-                        <div>
-                            your choice is Cloud
-                        </div>
-                    }
+                {
+                    <div class="mt-4">
+                        @foreach (var question in questions)
+                        {
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <strong>@question.Question</strong>
+                                </div>
+                                <div class="col-md-4">
+                                    @if (question.Type == QuestionType.Text)
+                                    {
+                                        <input type="text" class="form-control" @bind="question.TextAnswer" />
+                                    }
+                                    else if (question.Type == QuestionType.Checkbox)
+                                    {
+                                        @foreach (var answer in question.CheckboxAnswers)
+                                        {
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" value="@answer" />
+                                                <label class="form-check-label">@answer</label>
+                                            </div>
+                                        }
+                                    }
+                                    else if (question.Type == QuestionType.Dropdown)
+                                    {
+                                        <select class="form-select" @bind="question.TextAnswer">
+                                            @foreach (var option in question.DropdownOptions)
+                                            {
+                                                <option value="@option">@option</option>
+                                            }
+                                        </select>
+                                    }
+                                </div>
+                                <div class="col-md-4">
+                                    <small>@question.Explanation</small>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div>
+                        your choice is Cloud
+                    </div>
+                }
             </div>
         </div>
     </div>
@@ -32,4 +72,22 @@
 
 @code {
     private string option = "On-Prem";
+    private List<QuestionEntity> questions = new List<QuestionEntity>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var baseUri = NavigationManager.BaseUri;
+            var jsonUri = $"{baseUri}data/sdp.json";
+            var json = await Http.GetStringAsync(jsonUri);
+            questions = JsonSerializer.Deserialize<List<QuestionEntity>>(json) ?? new List<QuestionEntity>();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+
+
+    }
 }

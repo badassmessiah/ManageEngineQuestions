@@ -1,0 +1,26 @@
+[
+    {
+      "Question": "Do you require the application to support Multi-Language?",
+      "Explanation": "ServiceDesk Plus is available in more than 20 Languages. Refer the below links to know more about the Supported Languages both in On-Premises & in On-Demand Versions. https://www.manageengine.com/products/service-desk/localized-versions.html https://www.manageengine.com/products/service-desk/supported-languages.html",
+      "Type": "Dropdown",
+      "TextAnswer": "",
+      "CheckboxAnswers": [],
+      "DropdownOptions": ["Multi-Language", "English Only"]
+    },
+    {
+      "Question": "Do you require Fail Over Service?",
+      "Explanation": "ServiceDesk Plus can run on High Availability. Please refer to the below link for more details. https://help.servicedeskplus.com/configurations/failover-service/failover-service.html",
+      "Type": "Checkbox",
+      "TextAnswer": "",
+      "CheckboxAnswers": ["Yes", "No"],
+      "DropdownOptions": []
+    },
+    {
+      "Question": "Do you require Enterprise Service Management?",
+      "Explanation": "ServiceDesk Plus supports Enterprise Service Management - which allows multiple helpdesk instances like IT, HR, Finance, etc. to be created/configured under 1 organization account. Each instance can have its own technicians, workflows, templates, etc. & are licensed separately which includes Technicians, Editions, Add-ons, etc.  For On-premise version you can have max 15 instances. Refer the below link to know more about the same. https://www.manageengine.com/products/service-desk/enterprise-service-desk-management.html",
+      "Type": "Checkbox",
+      "TextAnswer": "",
+      "CheckboxAnswers": ["Yes", "No"],
+      "DropdownOptions": []
+    }
+  ]

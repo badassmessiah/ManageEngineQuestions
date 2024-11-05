@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 
 namespace ManageEngineQuestions.Services
 {
@@ -19,13 +18,13 @@ namespace ManageEngineQuestions.Services
             CheckboxAnswers = new List<string>();
             DropdownOptions = new List<string>();
         }
-
     }
-}
 
-public enum QuestionType
-{
-    Text,
-    Checkbox,
-    Dropdown,
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum QuestionType
+    {
+        Text,
+        Checkbox,
+        Dropdown
+    }
 }
