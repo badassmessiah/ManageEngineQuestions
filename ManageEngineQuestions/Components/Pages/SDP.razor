@@ -46,33 +46,35 @@
                             </div>
                             @if (question.ChildQuestionsByAnswer.ContainsKey(question.TextAnswer))
                             {
-                                <div class="ml-4">
-                                    @foreach (var childQuestion in question.ChildQuestionsByAnswer[question.TextAnswer])
-                                    {
-                                        <div class="row mt-3">
-                                            <div class="col-md-4">
-                                                <p>@childQuestion.Question</p>
+                                <div class="card mt-3">
+                                    <div class="card-body">
+                                        @foreach (var childQuestion in question.ChildQuestionsByAnswer[question.TextAnswer])
+                                        {
+                                            <div class="row mt-3">
+                                                <div class="col-md-4">
+                                                    <p>@childQuestion.Question</p>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    @if (childQuestion.Type == QuestionType.Text)
+                                                    {
+                                                        <input type="text" @bind="childQuestion.TextAnswer" class="form-control" />
+                                                    }
+                                                    else if (childQuestion.Type == QuestionType.Dropdown)
+                                                    {
+                                                        <select @bind="childQuestion.TextAnswer" class="form-select">
+                                                            @foreach (var option in childQuestion.DropdownOptions)
+                                                            {
+                                                                <option value="@option">@option</option>
+                                                            }
+                                                        </select>
+                                                    }
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <p>@childQuestion.Explanation</p>
+                                                </div>
                                             </div>
-                                            <div class="col-md-4">
-                                                @if (childQuestion.Type == QuestionType.Text)
-                                                {
-                                                    <input type="text" @bind="childQuestion.TextAnswer" class="form-control" />
-                                                }
-                                                else if (childQuestion.Type == QuestionType.Dropdown)
-                                                {
-                                                    <select @bind="childQuestion.TextAnswer" class="form-select">
-                                                        @foreach (var option in childQuestion.DropdownOptions)
-                                                        {
-                                                            <option value="@option">@option</option>
-                                                        }
-                                                    </select>
-                                                }
-                                            </div>
-                                            <div class="col-md-4">
-                                                <p>@childQuestion.Explanation</p>
-                                            </div>
-                                        </div>
-                                    }
+                                        }
+                                    </div>
                                 </div>
                             }
                         }
