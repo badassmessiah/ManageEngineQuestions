@@ -94,7 +94,7 @@
       ],
       "Yes": [
         {
-          "Question": "Which edition of ServiceDesk Plus do you need?",
+          "Question": "ESM...Which edition of ServiceDesk Plus do you need?",
           "Explanation": "ServiceDesk Plus is available in 3 editions as Standard, Professional & Enterprise. Refer the below link to know more about the differences between the editions. \n https://www.manageengine.com/products/service-desk/sdp-editions.html",
           "Type": "Dropdown",
           "TextAnswer": "",
