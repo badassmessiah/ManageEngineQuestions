@@ -1,0 +1,183 @@
+[
+  {
+    "Question": "Do you require the application to support Multi-Language?",
+    "Explanation": "ServiceDesk Plus is available in more than 20 Languages. Refer the below links to know more about the Supported Languages both in On-Premises & in On-Demand Versions. https://www.manageengine.com/products/service-desk/localized-versions.html https://www.manageengine.com/products/service-desk/supported-languages.html",
+    "Type": "Dropdown",
+    "TextAnswer": "",
+    "DropdownOptions": ["Multi-Language", "English Only"]
+  },
+  {
+    "Question": "Do you require Fail Over Service?",
+    "Explanation": "ServiceDesk Plus can run on High Availability. Please refer to the below link for more details. https://help.servicedeskplus.com/configurations/failover-service/failover-service.html",
+    "Type": "Dropdown",
+    "TextAnswer": "",
+    "DropdownOptions": ["Yes", "No"]
+  },
+  {
+    "Question": "Do you require Enterprise Service Management?",
+    "Explanation": "ServiceDesk Plus supports Enterprise Service Management - which allows multiple helpdesk instances like IT, HR, Finance, etc. to be created/configured under 1 organization account. Each instance can have its own technicians, workflows, templates, etc. & are licensed separately which includes Technicians, Editions, Add-ons, etc.  For On-premise version you can have max 15 instances. Refer the below link to know more about the same. https://www.manageengine.com/products/service-desk/enterprise-service-desk-management.html",
+    "Type": "Dropdown",
+    "TextAnswer": "",
+    "DropdownOptions": ["No", "Yes"],
+    "ChildQuestionsByAnswer": {
+      "No": [
+        {
+          "Question": "Which edition of ServiceDesk Plus do you need?",
+          "Explanation": "ServiceDesk Plus is available in 3 editions as Standard, Professional & Enterprise. Refer the below link to know more about the differences between the editions. \n https://www.manageengine.com/products/service-desk/sdp-editions.html",
+          "Type": "Dropdown",
+          "TextAnswer": "",
+          "DropdownOptions": ["Standard", "Professional", "Enterprise"]
+        },
+        {
+          "Question": "Number of Technicians required?",
+          "Explanation": "ServiceDesk Plus is licensed based on the number of 'Named Technicians' who needs access to the application for managing the Tickets, Assets, Problem, Change, CMDB, Purchase, Contracts, Reports, etc. There is no licensing/limitation on the number of users who can Report an Issue or Request for Service.",
+          "Type": "Text",
+          "TextAnswer": "1",
+          "DropdownOptions": []
+        },
+        {
+          "Question": "Number of Nodes",
+          "Explanation": "Applicable only for Professional & Enterprise Editions. \n ServiceDesk Plus is also licensed based on the total number of Nodes/Assets. ServiceDesk Plus supports adding assets under 2 categories as IT Asset & as Non IT Assets. All assets added under IT Asset Category either by scanning the network or by adding through CSV file or by adding manually using the New Asset Addition form will be considered as Node & for licensing. Assets can also be added under Non IT Asset Category through CSV or using the form where Scanning is not supported & there is no license required for Non IT Assets. ",
+          "Type": "Text",
+          "TextAnswer": "0",
+          "DropdownOptions": []
+        },
+        {
+          "Question": "Test Question",
+          "Explanation": "...",
+          "Type": "Text",
+          "TextAnswer": "0",
+          "DropdownOptions": []
+        },
+        {
+          "Question": "Project Management",
+          "Explanation": "You can learn more about the Project Management Add-on from the below link. \n https://www.manageengine.com/products/service-desk/itsm/it-project-management-tracking-software.html",
+          "Type": "Dropdown",
+          "TextAnswer": "",
+          "DropdownOptions": ["Yes", "No"]
+        },
+        {
+          "Question": "Change and Release Management",
+          "Explanation": "...",
+          "Type": "Dropdown",
+          "TextAnswer": "",
+          "DropdownOptions": ["Yes", "No"]
+        },
+        {
+          "Question": "Service Catalogue",
+          "Explanation": "...",
+          "Type": "Dropdown",
+          "TextAnswer": "",
+          "DropdownOptions": ["Yes", "No"]
+        },
+        {
+          "Question": "CTI Add-on",
+          "Explanation": "Computer Technology Integration",
+          "Type": "Dropdown",
+          "TextAnswer": "",
+          "DropdownOptions": ["Yes", "No"]
+        },
+        {
+          "Question": "Problem Management",
+          "Explanation": "...",
+          "Type": "Dropdown",
+          "TextAnswer": "",
+          "DropdownOptions": ["Yes", "No"]
+        },
+        {
+          "Question": "CMDB",
+          "Explanation": "...",
+          "Type": "Dropdown",
+          "TextAnswer": "",
+          "DropdownOptions": ["Yes", "No"]
+        }
+      ],
+      "Yes": [
+        {
+          "Question": "Which edition of ServiceDesk Plus do you need?",
+          "Explanation": "ServiceDesk Plus is available in 3 editions as Standard, Professional & Enterprise. Refer the below link to know more about the differences between the editions. \n https://www.manageengine.com/products/service-desk/sdp-editions.html",
+          "Type": "Dropdown",
+          "TextAnswer": "",
+          "DropdownOptions": ["Standard", "Professional", "Enterprise"]
+        },
+        {
+          "Question": "Number of Technicians required?",
+          "Explanation": "ServiceDesk Plus is licensed based on the number of 'Named Technicians' who needs access to the application for managing the Tickets, Assets, Problem, Change, CMDB, Purchase, Contracts, Reports, etc. There is no licensing/limitation on the number of users who can Report an Issue or Request for Service.",
+          "Type": "Text",
+          "TextAnswer": "1",
+          "DropdownOptions": []
+        },
+        {
+          "Question": "Number of Nodes",
+          "Explanation": "Applicable only for Professional & Enterprise Editions. \n ServiceDesk Plus is also licensed based on the total number of Nodes/Assets. ServiceDesk Plus supports adding assets under 2 categories as IT Asset & as Non IT Assets. All assets added under IT Asset Category either by scanning the network or by adding through CSV file or by adding manually using the New Asset Addition form will be considered as Node & for licensing. Assets can also be added under Non IT Asset Category through CSV or using the form where Scanning is not supported & there is no license required for Non IT Assets. ",
+          "Type": "Text",
+          "TextAnswer": "0",
+          "DropdownOptions": []
+        },
+        {
+          "Question": "Test Question",
+          "Explanation": "...",
+          "Type": "Text",
+          "TextAnswer": "0",
+          "DropdownOptions": []
+        },
+        {
+          "Question": "Project Management",
+          "Explanation": "You can learn more about the Project Management Add-on from the below link. \n https://www.manageengine.com/products/service-desk/itsm/it-project-management-tracking-software.html",
+          "Type": "Dropdown",
+          "TextAnswer": "",
+          "DropdownOptions": ["Yes", "No"]
+        },
+        {
+          "Question": "Change and Release Management",
+          "Explanation": "...",
+          "Type": "Dropdown",
+          "TextAnswer": "",
+          "DropdownOptions": ["Yes", "No"]
+        },
+        {
+          "Question": "Service Catalogue",
+          "Explanation": "...",
+          "Type": "Dropdown",
+          "TextAnswer": "",
+          "DropdownOptions": ["Yes", "No"]
+        },
+        {
+          "Question": "CTI Add-on",
+          "Explanation": "Computer Technology Integration",
+          "Type": "Dropdown",
+          "TextAnswer": "",
+          "DropdownOptions": ["Yes", "No"]
+        },
+        {
+          "Question": "Problem Management",
+          "Explanation": "...",
+          "Type": "Dropdown",
+          "TextAnswer": "",
+          "DropdownOptions": ["Yes", "No"]
+        },
+        {
+          "Question": "CMDB",
+          "Explanation": "...",
+          "Type": "Dropdown",
+          "TextAnswer": "",
+          "DropdownOptions": ["Yes", "No"]
+        }
+      ]
+    }
+  },
+  {
+    "Question": "Annual/Perpetual License",
+    "Explanation": "...",
+    "Type": "Dropdown",
+    "TextAnswer": "",
+    "DropdownOptions": ["Annual", "Perpetual"]
+  },
+  {
+    "Question": "Years/AMS Years if perpetual",
+    "Explanation": "...",
+    "Type": "Text",
+    "TextAnswer": "1",
+    "DropdownOptions": []
+  }
+]

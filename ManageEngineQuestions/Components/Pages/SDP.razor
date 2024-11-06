@@ -10,199 +10,78 @@
             <div class="col">
                 <p class="text-center">Choose ServiceDesk Hosting Model</p>
                 <div class="d-flex justify-content-center align-items-center">
-                    <select @bind="option" @bind:after="LoadQuestions" class="form-select me2">
+                    <select @bind="Option" class="form-select me2">
                         <option value="On-Prem">On-Prem</option>
                         <option value="Cloud">Cloud</option>
                     </select>
                 </div>
-                @if (option == "On-Prem")
+                @if (Option == "On-Prem")
                 {
-                    <div class="mt-4">
-                        @foreach (var question in baseQuestions)
+                    <div>
+                        Your choice is On-Prem
+                        @foreach (var question in Questions)
                         {
-                            <div class="row mb-3 align-items-center">
+                            <div class="row mt-3">
                                 <div class="col-md-4">
-                                    <strong>@question.Question</strong>
+                                    <p>@question.Question</p>
                                 </div>
                                 <div class="col-md-4">
                                     @if (question.Type == QuestionType.Text)
                                     {
-                                        <input type="text" class="form-control" @bind="question.TextAnswer" />
-                                    }
-                                    else if (question.Type == QuestionType.Checkbox)
-                                    {
-                                        @foreach (var answer in question.CheckboxAnswers)
-                                        {
-                                            <div class="form-check">
-                                                <input type="radio" name="question_@(baseQuestions.IndexOf(question))"
-                                                    class="form-check-input" value="@answer" />
-                                                <label class="form-check-label">@answer</label>
-                                            </div>
-                                        }
+                                        <input type="text" @bind="question.TextAnswer" class="form-control" />
                                     }
                                     else if (question.Type == QuestionType.Dropdown)
                                     {
-                                        @if (question.Question.Contains("Enterprise Service Management"))
-                                        {
-                                            <select class="form-select" @bind="question.TextAnswer"
-                                                @bind:after="@(async () => await HandleESMAnswer(question.TextAnswer))">
-                                                @foreach (var opt in question.DropdownOptions)
-                                                {
-                                                    <option value="@opt">@opt</option>
-                                                }
-                                            </select>
-                                        }
-                                        else
-                                        {
-                                            <select class="form-select" @bind="question.TextAnswer">
-                                                @foreach (var opt in question.DropdownOptions)
-                                                {
-                                                    <option value="@opt">@opt</option>
-                                                }
-                                            </select>
-                                        }
+                                        <select @bind="question.TextAnswer" class="form-select">
+                                            @foreach (var option in question.DropdownOptions)
+                                            {
+                                                <option value="@option">@option</option>
+                                            }
+                                        </select>
                                     }
                                 </div>
                                 <div class="col-md-4">
-                                    <small>
-                                        @string.Join(" ", question.Explanation.Split(' ').Take(6))...
-                                        <button class="btn btn-link btn-sm"
-                                            @onclick="@(() => ShowExplanation(question.Explanation))">Learn More</button>
-                                    </small>
+                                    <p>@question.Explanation</p>
                                 </div>
                             </div>
-                        }
-
-                        @if (showESMQuestions)
-                        {
-                            <div class="mt-4">
-                                @foreach (var instance in esmInstances)
-                                {
-                                    <div class="card mb-3">
-                                        <div class="card-header d-flex justify-content-between align-items-center">
-                                            <input type="text" class="form-control" @bind="instance.Name"
-                                                placeholder="Enter instance name" />
-                                            <button class="btn" @onclick="@(() => RemoveESMInstance(instance))">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor"
-                                                    class="bi bi-dash" viewBox="0 0 16 16">
-                                                    <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8" />
-                                                </svg>
-                                            </button>
-                                            <button class="btn" @onclick="AddESMInstance">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor"
-                                                    class="bi bi-plus" viewBox="0 0 16 16">
-                                                    <path
-                                                        d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
-                                                </svg>
-                                            </button>
-                                        </div>
-                                        <div class="card-body">
-                                            @foreach (var question in instance.Questions)
-                                            {
-                                                <div class="row mb-3 align-items-center">
-                                                    <div class="col-md-4">
-                                                        <strong>@question.Question</strong>
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        @if (question.Type == QuestionType.Text)
-                                                        {
-                                                            <input type="text" class="form-control" @bind="question.TextAnswer" />
-                                                        }
-                                                        else if (question.Type == QuestionType.Checkbox)
-                                                        {
-                                                            @foreach (var answer in question.CheckboxAnswers)
-                                                            {
-                                                                <div class="form-check">
-                                                                    <input type="radio"
-                                                                        name="question_@($"{esmInstances.IndexOf(instance)}_{instance.Questions.IndexOf(question)}")"
-                                                                        class="form-check-input" value="@answer" />
-                                                                    <label class="form-check-label">@answer</label>
-                                                                </div>
-                                                            }
-                                                        }
-                                                        else if (question.Type == QuestionType.Dropdown)
-                                                        {
-                                                            <select class="form-select" @bind="question.TextAnswer">
-                                                                @foreach (var opt in question.DropdownOptions)
-                                                                {
-                                                                    <option value="@opt">@opt</option>
-                                                                }
-                                                            </select>
-                                                        }
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <small>
-                                                            @string.Join(" ", question.Explanation.Split(' ').Take(6))...
-                                                            <button class="btn btn-link btn-sm"
-                                                                @onclick="@(() => ShowExplanation(question.Explanation))">Learn
-                                                                More</button>
-                                                        </small>
-                                                    </div>
-                                                </div>
-                                            }
-                                        </div>
-                                    </div>
-                                }
-                            </div>
-                        }
-                        else
-                        {
-                            <div class="mt-4">
-                                <div class="card mb-3">
-                                    <div class="card-body" style="width: 100%;">
-                                        @foreach (var question in singleInstance.Questions)
-                                        {
-                                            <div class="row mb-3 align-items-center">
-                                                <div class="col-md-4">
-                                                    <strong>@question.Question</strong>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    @if (question.Type == QuestionType.Text)
-                                                    {
-                                                        <input type="text" class="form-control" @bind="question.TextAnswer" />
-                                                    }
-                                                    else if (question.Type == QuestionType.Checkbox)
-                                                    {
-                                                        @foreach (var answer in question.CheckboxAnswers)
-                                                        {
-                                                            <div class="form-check">
-                                                                <input type="radio"
-                                                                    name="question_@($"{singleInstance.Questions.IndexOf(question)}")"
-                                                                    class="form-check-input" value="@answer" />
-                                                                <label class="form-check-label">@answer</label>
-                                                            </div>
-                                                        }
-                                                    }
-                                                    else if (question.Type == QuestionType.Dropdown)
-                                                    {
-                                                        <select class="form-select" @bind="question.TextAnswer">
-                                                            @foreach (var opt in question.DropdownOptions)
-                                                            {
-                                                                <option value="@opt">@opt</option>
-                                                            }
-                                                        </select>
-                                                    }
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <small>
-                                                        @string.Join(" ", question.Explanation.Split(' ').Take(6))...
-                                                        <button class="btn btn-link btn-sm"
-                                                            @onclick="@(() => ShowExplanation(question.Explanation))">Learn
-                                                            More</button>
-                                                    </small>
-                                                </div>
+                            @if (question.ChildQuestionsByAnswer.ContainsKey(question.TextAnswer))
+                            {
+                                <div class="ml-4">
+                                    @foreach (var childQuestion in question.ChildQuestionsByAnswer[question.TextAnswer])
+                                    {
+                                        <div class="row mt-3">
+                                            <div class="col-md-4">
+                                                <p>@childQuestion.Question</p>
                                             </div>
-                                        }
-                                    </div>
+                                            <div class="col-md-4">
+                                                @if (childQuestion.Type == QuestionType.Text)
+                                                {
+                                                    <input type="text" @bind="childQuestion.TextAnswer" class="form-control" />
+                                                }
+                                                else if (childQuestion.Type == QuestionType.Dropdown)
+                                                {
+                                                    <select @bind="childQuestion.TextAnswer" class="form-select">
+                                                        @foreach (var option in childQuestion.DropdownOptions)
+                                                        {
+                                                            <option value="@option">@option</option>
+                                                        }
+                                                    </select>
+                                                }
+                                            </div>
+                                            <div class="col-md-4">
+                                                <p>@childQuestion.Explanation</p>
+                                            </div>
+                                        </div>
+                                    }
                                 </div>
-                            </div>
+                            }
                         }
                     </div>
                 }
                 else
                 {
                     <div>
-                        your choice is Cloud
+                        Your choice is Cloud
                     </div>
                 }
             </div>
@@ -211,36 +90,25 @@
 </div>
 
 @code {
-    private string option = "On-Prem";
-    private List<QuestionEntity> baseQuestions = new();
-    private List<ESMInstance> esmInstances = new();
-    private ESMInstance singleInstance = new();
-    private bool showESMQuestions = false;
+    private string Option { get; set; } = "On-Prem";
+    private List<QuestionEntity> Questions { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
-    {
-        await LoadQuestions();
-    }
-
-    private async Task LoadQuestions()
     {
         try
         {
             var baseUri = NavigationManager.BaseUri;
-            var jsonFile = option == "On-Prem" ? "sdp-on-prem-base.json" : "sdp-cloud.json";
+            var jsonFile = Option == "On-Prem" ? "sdp-on-prem.json" : "sdp-cloud.json";
             var jsonUri = $"{baseUri}data/{jsonFile}";
             var json = await Http.GetStringAsync(jsonUri);
-            baseQuestions = JsonSerializer.Deserialize<List<QuestionEntity>>(json) ?? new();
+            Questions = JsonSerializer.Deserialize<List<QuestionEntity>>(json) ?? new();
 
-            SetDropdownDefaults(baseQuestions);
+            SetDropdownDefaults(Questions);
 
-            esmInstances.Clear();
-            showESMQuestions = false;
-
-            // Load single instance questions
+            // Load single instance questions if needed
             var instanceJson = await Http.GetStringAsync($"{baseUri}data/sdp-on-prem-esm-instance.json");
-            singleInstance.Questions = JsonSerializer.Deserialize<List<QuestionEntity>>(instanceJson) ?? new();
-            SetDropdownDefaults(singleInstance.Questions);
+            var singleInstanceQuestions = JsonSerializer.Deserialize<List<QuestionEntity>>(instanceJson) ?? new();
+            SetDropdownDefaults(singleInstanceQuestions);
         }
         catch (Exception ex)
         {
@@ -248,98 +116,22 @@
         }
     }
 
-    private async Task HandleESMAnswer(string answer)
-    {
-        if (answer == "Yes")
-        {
-            showESMQuestions = true;
-            if (!esmInstances.Any())
-            {
-                await AddESMInstance();
-            }
-        }
-        else
-        {
-            showESMQuestions = false;
-            esmInstances.Clear();
-        }
-    }
-
-    private async Task AddESMInstance()
-    {
-        var baseUri = NavigationManager.BaseUri;
-        var instanceJson = await Http.GetStringAsync($"{baseUri}data/sdp-on-prem-esm-instance.json");
-        var instanceQuestions = JsonSerializer.Deserialize<List<QuestionEntity>>(instanceJson) ?? new();
-
-        SetDropdownDefaults(instanceQuestions);
-
-        esmInstances.Add(new ESMInstance
-            {
-                Name = "",
-                Questions = instanceQuestions
-            });
-    }
-
-    private void RemoveESMInstance(ESMInstance instance)
-    {
-        esmInstances.Remove(instance);
-    }
-
     private void SetDropdownDefaults(List<QuestionEntity> questions)
     {
         foreach (var question in questions)
         {
-            if (question.Type == QuestionType.Dropdown &&
-            string.IsNullOrEmpty(question.TextAnswer) &&
-            question.DropdownOptions.Any())
+            if (question.Type == QuestionType.Dropdown && string.IsNullOrEmpty(question.TextAnswer) && question.DropdownOptions.Count > 0)
             {
-                question.TextAnswer = question.DropdownOptions.First();
+                question.TextAnswer = question.DropdownOptions[0];
+            }
+
+            if (question.ChildQuestionsByAnswer != null)
+            {
+                foreach (var childQuestions in question.ChildQuestionsByAnswer.Values)
+                {
+                    SetDropdownDefaults(childQuestions);
+                }
             }
         }
-    }
-}
-
-@if (showModal)
-{
-    <div class="modal show" style="display: block" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Details</h5>
-                    <button type="button" class="btn-close" @onclick="CloseModal"></button>
-                </div>
-                <div class="modal-body">
-                    @((MarkupString)FormatExplanationWithLinks(selectedExplanation))
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal-backdrop show"></div>
-}
-
-@code {
-    private bool showModal = false;
-    private string selectedExplanation = "";
-
-    private void ShowExplanation(string explanation)
-    {
-        selectedExplanation = explanation;
-        showModal = true;
-    }
-
-    private void CloseModal()
-    {
-        showModal = false;
-        selectedExplanation = "";
-    }
-
-    private string FormatExplanationWithLinks(string text)
-    {
-        var urlPattern = @"(https?:\/\/[^\s]+)";
-        return System.Text.RegularExpressions.Regex.Replace(
-        text,
-        urlPattern,
-        match => $"<a href=\"{match.Value}\" target=\"_blank\">{match.Value}</a>"
-        );
     }
 }
