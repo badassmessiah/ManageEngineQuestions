@@ -18,7 +18,6 @@
                 @if (Option == "On-Prem")
                 {
                     <div>
-                        Your choice is On-Prem
                         @foreach (var question in Questions)
                         {
                             <div class="row mt-3">
@@ -41,7 +40,15 @@
                                     }
                                 </div>
                                 <div class="col-md-4">
-                                    <p>@question.Explanation</p>
+                                    @if (!string.IsNullOrEmpty(question.Explanation))
+                                    {
+                                        <p>@TruncateExplanation(question.Explanation)
+                                            @if (question.Explanation.Length > MaxExplanationLength)
+                                            {
+                                                <button class="btn btn-link p-0" @onclick="() => ShowExplanation(question.Explanation)">See more</button>
+                                            }
+                                        </p>
+                                    }
                                 </div>
                             </div>
                             @if (question.ChildQuestionsByAnswer.ContainsKey(question.TextAnswer))
@@ -70,7 +77,15 @@
                                                     }
                                                 </div>
                                                 <div class="col-md-4">
-                                                    <p>@childQuestion.Explanation</p>
+                                                    @if (!string.IsNullOrEmpty(childQuestion.Explanation))
+                                                    {
+                                                        <p>@TruncateExplanation(childQuestion.Explanation)
+                                                            @if (childQuestion.Explanation.Length > MaxExplanationLength)
+                                                            {
+                                                                <button class="btn btn-link p-0" @onclick="() => ShowExplanation(childQuestion.Explanation)">See more</button>
+                                                            }
+                                                        </p>
+                                                    }
                                                 </div>
                                             </div>
                                         }
@@ -91,10 +106,33 @@
     </div>
 </div>
 
+@if (ShowExplanationModal)
+{
+    <div class="modal fade show d-block" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Details</h5>
+                    <button type="button" class="btn-close" @onclick="CloseExplanationModal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>@CurrentExplanation</p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" @onclick="CloseExplanationModal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+}
+
 @code {
     private string Option { get; set; } = "On-Prem";
     private List<QuestionEntity> Questions { get; set; } = new();
-
+    private bool ShowExplanationModal { get; set; } = false;
+    private string CurrentExplanation { get; set; } = string.Empty;
+    private const int MaxExplanationLength = 35;
     protected override async Task OnInitializedAsync()
     {
         try
@@ -107,10 +145,6 @@
 
             SetDropdownDefaults(Questions);
 
-            // Load single instance questions if needed
-            var instanceJson = await Http.GetStringAsync($"{baseUri}data/sdp-on-prem-esm-instance.json");
-            var singleInstanceQuestions = JsonSerializer.Deserialize<List<QuestionEntity>>(instanceJson) ?? new();
-            SetDropdownDefaults(singleInstanceQuestions);
         }
         catch (Exception ex)
         {
@@ -135,5 +169,23 @@
                 }
             }
         }
+    }
+
+    private void ShowExplanation(string explanation)
+    {
+        CurrentExplanation = explanation;
+        ShowExplanationModal = true;
+    }
+
+    private void CloseExplanationModal()
+    {
+        ShowExplanationModal = false;
+    }
+
+    private string TruncateExplanation(string explanation)
+    {
+        if (string.IsNullOrEmpty(explanation) || explanation.Length <= MaxExplanationLength)
+            return explanation;
+        return explanation.Substring(0, MaxExplanationLength) + "...";
     }
 }
