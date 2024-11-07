@@ -4,6 +4,7 @@
 @inject NavigationManager NavigationManager
 
 <Back />
+
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-6">
@@ -51,104 +52,104 @@
                                     }
                                 </div>
                             </div>
-                            
-                            @if (question.ChildQuestionsByAnswer.ContainsKey(question.TextAnswer))
-                            {
-                                <div class="card mt-3">
-                                    <div class="card-body">
-                                        @foreach (var childQuestion in question.ChildQuestionsByAnswer[question.TextAnswer])
-                                        {
-                                            <div class="row mt-3">
-                                                <div class="col-md-4">
-                                                    <p>@childQuestion.Question</p>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    @if (childQuestion.Type == QuestionType.Text)
-                                                    {
-                                                        <input type="text" @bind="childQuestion.TextAnswer" class="form-control" />
-                                                    }
-                                                    else if (childQuestion.Type == QuestionType.Dropdown)
-                                                    {
-                                                        <select @bind="childQuestion.TextAnswer" class="form-select">
-                                                            @foreach (var option in childQuestion.DropdownOptions)
-                                                            {
-                                                                <option value="@option">@option</option>
-                                                            }
-                                                        </select>
-                                                    }
-                                                </div>
-                                                <div class="col-md-4">
-                                                    @if (!string.IsNullOrEmpty(childQuestion.Explanation))
-                                                    {
-                                                        <p>@TruncateExplanation(childQuestion.Explanation)
-                                                            @if (childQuestion.Explanation.Length > MaxExplanationLength)
-                                                            {
-                                                                <button class="btn btn-link p-0" @onclick="() => ShowExplanation(childQuestion.Explanation)">See more</button>
-                                                            }
-                                                        </p>
-                                                    }
-                                                </div>
-                                            </div>
-                                        }
-                                    </div>
-                                </div>
-                            }
 
                             @if (question.Question == "Do you require Enterprise Service Management?" && question.TextAnswer == "Yes")
                             {
+                                @if (!ESMInstances.Any())
+                                {
+                                    AddESMInstance();
+                                }
+
                                 <div class="d-flex align-items-center mt-2">
-                                    <button class="btn btn-primary me-2" @onclick="() => AddESMInstance(question)">+</button>
+                                    <button class="btn btn-primary me-2" @onclick="AddESMInstance">+</button>
                                     <button class="btn btn-secondary" @onclick="RemoveESMInstance">-</button>
                                 </div>
 
-                                <div class="accordion mt-3" id="esmAccordion">
+                                <div class="mt-3">
                                     @foreach (var esmInstance in ESMInstances)
                                     {
-                                        var instanceId = $"instance-{esmInstance.Id}";
-                                        <div class="accordion-item">
-                                            <h2 class="accordion-header" id="@($"heading-{instanceId}")">
-                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#@instanceId" aria-expanded="false" aria-controls="@instanceId">
-                                                    @esmInstance.Name
-                                                </button>
-                                            </h2>
-                                            <div id="@instanceId" class="accordion-collapse collapse" aria-labelledby="@($"heading-{instanceId}")" data-bs-parent="#esmAccordion">
-                                                <div class="accordion-body">
-                                                    <input type="text" @bind="esmInstance.Name" placeholder="Instance Name" class="form-control mb-3" />
-                                                    @foreach (var esmQuestion in esmInstance.Questions)
-                                                    {
-                                                        <div class="row mt-3">
-                                                            <div class="col-md-4">
-                                                                <p>@esmQuestion.Question</p>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                @if (esmQuestion.Type == QuestionType.Text)
-                                                                {
-                                                                    <input type="text" @bind="esmQuestion.TextAnswer" class="form-control" />
-                                                                }
-                                                                else if (esmQuestion.Type == QuestionType.Dropdown)
-                                                                {
-                                                                    <select @bind="esmQuestion.TextAnswer" class="form-select">
-                                                                        @foreach (var option in esmQuestion.DropdownOptions)
-                                                                        {
-                                                                            <option value="@option">@option</option>
-                                                                        }
-                                                                    </select>
-                                                                }
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                @if (!string.IsNullOrEmpty(esmQuestion.Explanation))
-                                                                {
-                                                                    <p>@TruncateExplanation(esmQuestion.Explanation)
-                                                                        @if (esmQuestion.Explanation.Length > MaxExplanationLength)
-                                                                        {
-                                                                            <button class="btn btn-link p-0" @onclick="() => ShowExplanation(esmQuestion.Explanation)">See more</button>
-                                                                        }
-                                                                    </p>
-                                                                }
-                                                            </div>
-                                                        </div>
-                                                    }
+                                        <details class="mb-3">
+                                            <summary class="btn btn-light w-100 text-start p-3 border rounded">
+                                                @esmInstance.Name
+                                                <span class="float-end"><i class="fas fa-chevron-down"></i></span>
+                                            </summary>
+                                            <div class="border rounded-bottom p-3">
+                                                <div class="mb-3">
+                                                    <input type="text" @bind="esmInstance.Name" @bind:event="oninput" placeholder="Instance Name" class="form-control" />
                                                 </div>
+                                                @foreach (var esmQuestion in esmInstance.Questions)
+                                                {
+                                                    <div class="row mt-3">
+                                                        <div class="col-md-4">
+                                                            <p>@esmQuestion.Question</p>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            @if (esmQuestion.Type == QuestionType.Text)
+                                                            {
+                                                                <input type="text" @bind="esmQuestion.TextAnswer" class="form-control" />
+                                                            }
+                                                            else if (esmQuestion.Type == QuestionType.Dropdown)
+                                                            {
+                                                                <select @bind="esmQuestion.TextAnswer" class="form-select">
+                                                                    @foreach (var option in esmQuestion.DropdownOptions)
+                                                                    {
+                                                                        <option value="@option">@option</option>
+                                                                    }
+                                                                </select>
+                                                            }
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            @if (!string.IsNullOrEmpty(esmQuestion.Explanation))
+                                                            {
+                                                                <p>@TruncateExplanation(esmQuestion.Explanation)
+                                                                    @if (esmQuestion.Explanation.Length > MaxExplanationLength)
+                                                                    {
+                                                                        <button class="btn btn-link p-0" @onclick="() => ShowExplanation(esmQuestion.Explanation)">See more</button>
+                                                                    }
+                                                                </p>
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </details>
+                                    }
+                                </div>
+                            }
+                            else if (question.ChildQuestionsByAnswer.ContainsKey(question.TextAnswer))
+                            {
+                                <div>
+                                    @foreach (var childQuestion in question.ChildQuestionsByAnswer[question.TextAnswer])
+                                    {
+                                        <div class="row mt-3">
+                                            <div class="col-md-4">
+                                                <p>@childQuestion.Question</p>
+                                            </div>
+                                            <div class="col-md-4">
+                                                @if (childQuestion.Type == QuestionType.Text)
+                                                {
+                                                    <input type="text" @bind="childQuestion.TextAnswer" class="form-control" />
+                                                }
+                                                else if (childQuestion.Type == QuestionType.Dropdown)
+                                                {
+                                                    <select @bind="childQuestion.TextAnswer" class="form-select">
+                                                        @foreach (var option in childQuestion.DropdownOptions)
+                                                        {
+                                                            <option value="@option">@option</option>
+                                                        }
+                                                    </select>
+                                                }
+                                            </div>
+                                            <div class="col-md-4">
+                                                @if (!string.IsNullOrEmpty(childQuestion.Explanation))
+                                                {
+                                                    <p>@TruncateExplanation(childQuestion.Explanation)
+                                                        @if (childQuestion.Explanation.Length > MaxExplanationLength)
+                                                        {
+                                                            <button class="btn btn-link p-0" @onclick="() => ShowExplanation(childQuestion.Explanation)">See more</button>
+                                                        }
+                                                    </p>
+                                                }
                                             </div>
                                         </div>
                                     }
@@ -196,6 +197,7 @@
     private bool ShowExplanationModal { get; set; } = false;
     private string CurrentExplanation { get; set; } = string.Empty;
     private const int MaxExplanationLength = 35;
+    private const int MaxESMInstances = 15;
 
     protected override async Task OnInitializedAsync()
     {
@@ -206,7 +208,6 @@
             var jsonUri = $"{baseUri}data/{jsonFile}";
             var json = await Http.GetStringAsync(jsonUri);
             Questions = JsonSerializer.Deserialize<List<QuestionEntity>>(json) ?? new();
-
             SetDropdownDefaults(Questions);
         }
         catch (Exception ex)
@@ -223,7 +224,6 @@
             {
                 question.TextAnswer = question.DropdownOptions[0];
             }
-
             if (question.ChildQuestionsByAnswer != null)
             {
                 foreach (var childQuestions in question.ChildQuestionsByAnswer.Values)
@@ -243,40 +243,20 @@
     private void CloseExplanationModal()
     {
         ShowExplanationModal = false;
+        CurrentExplanation = string.Empty;
     }
 
-    private string TruncateExplanation(string explanation)
+    private void AddESMInstance()
     {
-        if (string.IsNullOrEmpty(explanation) || explanation.Length <= MaxExplanationLength)
-            return explanation;
-        return explanation.Substring(0, MaxExplanationLength) + "...";
-    }
-
-    private void AddESMInstance(QuestionEntity esmQuestion)
-    {
-        if (esmQuestion.ChildQuestionsByAnswer.TryGetValue("Yes", out var esmQuestions))
+        if (ESMInstances.Count < MaxESMInstances)
         {
-            // Clone the questions to ensure each instance has its own set of questions
-            var clonedQuestions = esmQuestions.Select(q => new QuestionEntity
+            var newESMInstance = new ESMInstance
             {
-                Question = q.Question,
-                Explanation = q.Explanation,
-                Type = q.Type,
-                TextAnswer = string.Empty,
-                DropdownOptions = new List<string>(q.DropdownOptions),
-                CheckboxAnswers = new List<string>(q.CheckboxAnswers),
-                ChildQuestionsByAnswer = q.ChildQuestionsByAnswer.ToDictionary(entry => entry.Key, entry => entry.Value.Select(cq => new QuestionEntity
-                {
-                    Question = cq.Question,
-                    Explanation = cq.Explanation,
-                    Type = cq.Type,
-                    TextAnswer = string.Empty,
-                    DropdownOptions = new List<string>(cq.DropdownOptions),
-                    CheckboxAnswers = new List<string>(cq.CheckboxAnswers)
-                }).ToList())
-            }).ToList();
-
-            ESMInstances.Add(new ESMInstance { Id = Guid.NewGuid().ToString(), Questions = clonedQuestions });
+                Id = (ESMInstances.Count + 1).ToString(),
+                Name = $"ESM Instance {ESMInstances.Count + 1}",
+                Questions = GetESMQuestions()
+            };
+            ESMInstances.Add(newESMInstance);
         }
     }
 
@@ -286,5 +266,24 @@
         {
             ESMInstances.RemoveAt(ESMInstances.Count - 1);
         }
+    }
+
+    private List<QuestionEntity> GetESMQuestions()
+    {
+        var esmQuestion = Questions.FirstOrDefault(q => q.Question == "Do you require Enterprise Service Management?");
+        if (esmQuestion != null && esmQuestion.ChildQuestionsByAnswer.ContainsKey("Yes"))
+        {
+            return esmQuestion.ChildQuestionsByAnswer["Yes"];
+        }
+        return new List<QuestionEntity>();
+    }
+
+    private string TruncateExplanation(string explanation)
+    {
+        if (explanation.Length > MaxExplanationLength)
+        {
+            return explanation.Substring(0, MaxExplanationLength) + "...";
+        }
+        return explanation;
     }
 }
