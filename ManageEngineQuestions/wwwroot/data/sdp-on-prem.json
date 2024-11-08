@@ -238,5 +238,83 @@
         }
       ]
     }
+  },
+  {
+    "Question": "Do you require Advanced Analytics Add-on of ServiceDesk Plus?",
+    "Explanation": "Active Directory Management Add-on of ServiceDesk Plus is to manage Active Directory using ManageEngine AD Manager Plus. By opting for this add-on, AD Manager Plus will be integrated with ServiceDesk Plus. This add-on is licensed based on Number of Domains to be managed, Number of AD ServiceDesk Technicians & Number of Privileged AD Technicians.",
+    "Type": "Dropdown",
+    "TextAnswer": "",
+    "DropdownOptions": [
+      "No",
+      "Yes"
+    ],
+    "ChildQuestionsByAnswer": {
+      "No": [],
+      "Yes": [
+        {
+          "Question": "Do you require On-Premises Version (Analytics Plus) or Hosted Version (Analytics Plus Cloud )?",
+          "Explanation": "Analytics Plus is available both as On-Premises (Download & Install) Version & as Hosted Version (Hosted by ManageEngine).",
+          "Type": "Dropdown",
+          "TextAnswer": "",
+          "DropdownOptions": ["On-Prem", "Cloud"]
+        },
+        {
+          "Question": "Specify the required Analytics Plus Edition (Standard/Professional/Enterprise)",
+          "Explanation": "Analytics Plus is available in Standard, Professional and Enterprise Edition. Enterprise edition is applicable only for On Cloud. Refer the below link to know more about the features offered & comparison between the Analytics Plus editions. https://www.manageengine.com/analytics-plus/compare-editions.html",
+          "Type": "Dropdown",
+          "TextAnswer": "",
+          "DropdownOptions": ["Standard", "Professional", "Enterprise"]
+        },
+        {
+          "Question": "How many users needs access to Analytics Plus?",
+          "Explanation": "Analytics Plus is licensed based on the number of Users(Named Users) who needs access to the application to Create Reports, Create Dashboard or View Dashboard, etc.",
+          "Type": "Text",
+          "TextAnswer": "1",
+          "DropdownOptions": []
+        },
+        {
+          "Question" : "Do you need users with View Only Permission to all the reports, dashboards and analytics? Specify the number of Viewer licenses necessary.",
+          "Explanation" : "Viewers are members with read-only permission to all the analysis performed in Analytics Plus. ",
+          "Type" : "Text",
+          "TextAnswer" : "0",
+          "DropdownOptions" : []
+        },
+        {
+          "Question" : "Do you require concurrent guest licenses? Specify the number of concurrent guest licenses necessary.",
+          "Explanation" : "Applicable for Analytics Plus on-premise edition. Concurrent guest licenses allow members to view published reports and dashboards without logging into Analytics Plus. If you purchase 25 concurrent guests, any 25 members of your organization who have access to published reports/dashboards can view them at any given point in time. This license component works on concurrent browser sessions and and not tied to any particular named account or member of your organization. ",
+          "Type" : "Text",
+          "TextAnswer" : "0",
+          "DropdownOptions" : []
+        },
+        {
+          "Question": "Do you require 'Publish Views' Add on ? (Yes/No) ?",
+          "Explanation": "Applicable for Analytics Plus On cloud : The Publish Views add-on simplifies the process of sharing reports and dashboards within your organization by eliminating the need for members to log in to Analytics Plus. With this add-on, you can effortlessly publish or embed reports and dashboards, making them easily accessible to all members. Note: The Publish Views functionality is a default feature in the Enterprise Edition and available as an add-on with the Professional Edition.",
+          "Type": "Dropdown",
+          "TextAnswer": "",
+          "DropdownOptions": ["No", "Yes"]
+        },
+        {
+          "Question": "Do you require 'Email schedules' Add on ? (Yes/No) ? If yes, Please specify the number.",
+          "Explanation": "Applicable for Analytics Plus On cloud: Email schedules provide users with the capability to conveniently schedule reports and dashboards for automatic delivery to their colleagues' email inboxes. The Professional edition includes 20 Email Schedules as part of the plan and the Enterprise edition includes 30. Refer to the link to know more: https: //www.manageengine.com/analytics-plus/compare-editions.html",
+          "Type": "Text",
+          "TextAnswer": "0",
+          "DropdownOptions": []
+        },
+        {
+          "Question": "Do you require 'Data Alerts' Add on ? (Yes/No) ? If Yes, Please specify the number of Data Alerts you will need in addition to this number.",
+          "Explanation": "Applicable for Analytics Plus On cloud: Users can create threshold-based data alerts to notify themselves or other users of changes in key metrics. Data alerts are sent via in-app and email notifications. The Professional edition includes 20 Data Alerts as part of the plan and the Enterprise edition includes 30. Refer to the link to know more: https: //www.manageengine.com/analytics-plus/compare-editions.html",
+          "Type": "Text",
+          "TextAnswer": "0",
+          "DropdownOptions": []
+        },
+        {
+          "Question": "Specify the number of 'Additional Rows'",
+          "Explanation": "Applicable for Analytics Plus On cloud: The number of rows (records) is the sum of records stored across workspaces in your Analytics Plus application. The Professional edition comes with 10 Million rows of data and the Enterprise edition includes 25 Million rows of data. Please mention the number of rows of data that will be stored in Analytics Plus in addition to this number.",
+          "Type": "Text",
+          "TextAnswer": "0",
+          "DropdownOptions": []
+        }
+      ]
+    }
   }
 ]

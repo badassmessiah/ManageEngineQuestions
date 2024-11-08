@@ -25,7 +25,7 @@
                                 <div class="col-md-4">
                                     <p>@question.Question</p>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-4 d-flex align-items-center">
                                     @if (question.Type == QuestionType.Text)
                                     {
                                         <input type="text" @bind="question.TextAnswer" class="form-control" />
@@ -83,7 +83,7 @@
                                                         <div class="col-md-4">
                                                             <p>@esmQuestion.Question</p>
                                                         </div>
-                                                        <div class="col-md-4">
+                                                        <div class="col-md-4 d-flex align-items-center">
                                                             @if (esmQuestion.Type == QuestionType.Text)
                                                             {
                                                                 <input type="text" @bind="esmQuestion.TextAnswer" class="form-control" />
@@ -116,16 +116,16 @@
                                     }
                                 </div>
                             }
-                            else if (question.ChildQuestionsByAnswer.ContainsKey(question.TextAnswer))
+                            else if (question.ChildQuestionsByAnswer.ContainsKey(question.TextAnswer) && question.ChildQuestionsByAnswer[question.TextAnswer]?.Any() == true)
                             {
-                                <div>
+                                <div class="p-3 border rounded">
                                     @foreach (var childQuestion in question.ChildQuestionsByAnswer[question.TextAnswer])
                                     {
                                         <div class="row mt-3">
                                             <div class="col-md-4">
                                                 <p>@childQuestion.Question</p>
                                             </div>
-                                            <div class="col-md-4">
+                                            <div class="col-md-4 d-flex align-items-center">
                                                 @if (childQuestion.Type == QuestionType.Text)
                                                 {
                                                     <input type="text" @bind="childQuestion.TextAnswer" class="form-control" />
