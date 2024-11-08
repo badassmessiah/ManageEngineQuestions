@@ -245,7 +245,7 @@
           "DropdownOptions": ["On-Prem", "Cloud"]
         },
         {
-          "Question": "Specify the required Analytics Plus Edition (Standard/Professional/Enterprise)",
+          "Question": "Specify Analytics Plus Edition",
           "Explanation": "Analytics Plus is available in Standard, Professional and Enterprise Edition. Enterprise edition is applicable only for On Cloud. Refer the below link to know more about the features offered & comparison between the Analytics Plus editions. https://www.manageengine.com/analytics-plus/compare-editions.html",
           "Type": "Dropdown",
           "TextAnswer": "",
@@ -273,21 +273,21 @@
           "DropdownOptions" : []
         },
         {
-          "Question": "Do you require 'Publish Views' Add on ? (Yes/No) ?",
+          "Question": "Do you require 'Publish Views' Add on?",
           "Explanation": "Applicable for Analytics Plus On cloud : The Publish Views add-on simplifies the process of sharing reports and dashboards within your organization by eliminating the need for members to log in to Analytics Plus. With this add-on, you can effortlessly publish or embed reports and dashboards, making them easily accessible to all members. Note: The Publish Views functionality is a default feature in the Enterprise Edition and available as an add-on with the Professional Edition.",
           "Type": "Dropdown",
           "TextAnswer": "",
           "DropdownOptions": ["No", "Yes"]
         },
         {
-          "Question": "Do you require 'Email schedules' Add on ? (Yes/No) ? If yes, Please specify the number.",
+          "Question": "Do you require 'Email schedules' Add on? If yes, Please specify the number.",
           "Explanation": "Applicable for Analytics Plus On cloud: Email schedules provide users with the capability to conveniently schedule reports and dashboards for automatic delivery to their colleagues' email inboxes. The Professional edition includes 20 Email Schedules as part of the plan and the Enterprise edition includes 30. Refer to the link to know more: https: //www.manageengine.com/analytics-plus/compare-editions.html",
           "Type": "Text",
           "TextAnswer": "0",
           "DropdownOptions": []
         },
         {
-          "Question": "Do you require 'Data Alerts' Add on ? (Yes/No) ? If Yes, Please specify the number of Data Alerts you will need in addition to this number.",
+          "Question": "Do you require 'Data Alerts' Add on? If Yes, Please specify the number of Data Alerts you will need in addition to this number.",
           "Explanation": "Applicable for Analytics Plus On cloud: Users can create threshold-based data alerts to notify themselves or other users of changes in key metrics. Data alerts are sent via in-app and email notifications. The Professional edition includes 20 Data Alerts as part of the plan and the Enterprise edition includes 30. Refer to the link to know more: https: //www.manageengine.com/analytics-plus/compare-editions.html",
           "Type": "Text",
           "TextAnswer": "0",
