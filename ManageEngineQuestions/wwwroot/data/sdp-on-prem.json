@@ -179,5 +179,64 @@
     "Type": "Text",
     "TextAnswer": "1",
     "DropdownOptions": []
+  },
+  {
+    "Question": "Do you require UEM Remote Access Plus add-on for ServiceDesk Plus?",
+    "Explanation": "ServiceDesk Plus can manage the Advanced Remote Control over WAN, Asset Scanning, Enable Chat, Wake on Lan, Publish Announcements, System Manager using UEM Remote Access Plus add-on. Refer the below link to know more on this Add-On  https://www.manageengine.com/products/service-desk/integrations/system-tools.html",
+    "Type": "Dropdown",
+    "TextAnswer": "",
+    "DropdownOptions": ["No", "Yes"],
+    "ChildQuestionsByAnswer": {
+      "No": [],
+      "Yes": [
+        {
+          "Question": "Please specify the number of computers for which you require this add-on to be enabled.",
+          "Explanation": "Manage the Advanced Remote Control over WAN, Asset Scanning, Enable Chat, Wake on LAN, Publish Announcements & System Manager.",
+          "Type": "Text",
+          "TextAnswer": "0",
+          "DropdownOptions": []
+        },
+        {
+          "Question": "How many additional users require access to UEM Remote Access Plus add-on?",
+          "Explanation": "By default 5 user license will be given with Professional/Enterprise editions.",
+          "Type": "Text",
+          "TextAnswer": "0",
+          "DropdownOptions": []
+        }
+      ]
+    }
+  },
+  {
+    "Question": "Do you require Active Directory Management Add-on of ServiceDesk Plus?",
+    "Explanation": "Active Directory Management Add-on of ServiceDesk Plus is to manage Active Directory using ManageEngine AD Manager Plus. By opting for this add-on, AD Manager Plus will be integrated with ServiceDesk Plus. This add-on is licensed based on Number of Domains to be managed, Number of AD ServiceDesk Technicians & Number of Privileged AD Technicians.",
+    "Type": "Dropdown",
+    "TextAnswer": "",
+    "DropdownOptions": ["No", "Yes"],
+    "ChildQuestionsByAnswer": {
+      "No": [],
+      "Yes": [
+        {
+          "Question": "How many Active Directory Domains are required to be managed?",
+          "Explanation": "By default, you can manage 1 domain using this add-on. If you require more than 1 domains to be managed, please specify.",
+          "Type": "Text",
+          "TextAnswer": "1",
+          "DropdownOptions": []
+        },
+        {
+          "Question": "How many AD ServiceDesk Technicians requires access?",
+          "Explanation": "These technicians can only perform User Creation, Password Reset & Account Unlock in AD.",
+          "Type": "Text",
+          "TextAnswer": "1",
+          "DropdownOptions": []
+        },
+        {
+          "Question": "How many Privileged AD Technicians requires access?",
+          "Explanation": "These technicians can perform privileged activities supported in AD Manager Plus, like Group Management, Computer Management, OU Management, User Management, etc.",
+          "Type": "Text",
+          "TextAnswer": "1",
+          "DropdownOptions": []
+        }
+      ]
+    }
   }
 ]
