@@ -19,6 +19,9 @@ namespace ManageEngineQuestions.Services
         // Constructor
         public QuestionEntity()
         {
+            Question = string.Empty;
+            Explanation = string.Empty;
+            TextAnswer = string.Empty;
             CheckboxAnswers = new List<string>();
             DropdownOptions = new List<string>();
             ChildQuestionsByAnswer = new Dictionary<string, List<QuestionEntity>>();
