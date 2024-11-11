@@ -1,14 +1,15 @@
 @page "/ec"
+@using System.Text
 @rendermode InteractiveServer
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
-
+@inject IJSRuntime JS
 <Back />
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="col">
-                <p class="text-center">Choose ServiceDesk Hosting Model</p>
+                <p class="text-center">Choose EndpointCentral Hosting Model</p>
                 <div class="d-flex justify-content-center align-items-center">
                     <select @bind="Option" @bind:event="oninput" @onchange="OnOptionChanged" class="form-select me-2">
                         <option value="On-Prem">On-Prem</option>
@@ -18,84 +19,19 @@
                 <div>
                     @foreach (var question in Questions)
                     {
-                        <div class="row mt-3">
-                            <div class="col-md-4 d-flex allign-items-center">
-                                <p>@question.Question</p>
-                            </div>
-                            <div class="col-md-4 d-flex align-items-center">
-                                @if (question.Type == QuestionType.Text)
-                                {
-                                    <input type="text" @bind="question.TextAnswer" class="form-control" />
-                                }
-                                else if (question.Type == QuestionType.Dropdown)
-                                {
-                                    <select @bind="question.TextAnswer" class="form-select">
-                                        @foreach (var option in question.DropdownOptions)
-                                        {
-                                            <option value="@option">@option</option>
-                                        }
-                                    </select>
-                                }
-                            </div>
-                            <div class="col-md-4 d-flex align-items-center">
-                                @if (!string.IsNullOrEmpty(question.Explanation))
-                                {
-                                    <p>@TruncateExplanation(question.Explanation)
-                                        @if (question.Explanation.Length > MaxExplanationLength)
-                                        {
-                                            <button class="btn btn-link p-0"
-                                                @onclick="() => ShowExplanation(question.Explanation)">See more</button>
-                                        }
-                                    </p>
-                                }
-                            </div>
-                            @if (question.ChildQuestionsByAnswer.ContainsKey(question.TextAnswer) && question.ChildQuestionsByAnswer[question.TextAnswer]?.Any() == true)
-                            {
-                                <div class="p-3 border rounded">
-                                    @foreach (var childQuestion in question.ChildQuestionsByAnswer[question.TextAnswer])
-                                    {
-                                        <div class="row mt-3">
-                                            <div class="col-md-4 d-flex align-items-center">
-                                                <p>@childQuestion.Question</p>
-                                            </div>
-                                            <div class="col-md-4 d-flex align-items-center">
-                                                @if (childQuestion.Type == QuestionType.Text)
-                                                {
-                                                    <input type="text" @bind="childQuestion.TextAnswer" class="form-control" />
-                                                }
-                                                else if (childQuestion.Type == QuestionType.Dropdown)
-                                                {
-                                                    <select @bind="childQuestion.TextAnswer" class="form-select">
-                                                        @foreach (var option in childQuestion.DropdownOptions)
-                                                        {
-                                                            <option value="@option">@option</option>
-                                                        }
-                                                    </select>
-                                                }
-                                            </div>
-                                            <div class="col-md-4 d-flex align-items-center">
-                                                @if (!string.IsNullOrEmpty(childQuestion.Explanation))
-                                                {
-                                                    <p>@TruncateExplanation(childQuestion.Explanation)
-                                                        @if (childQuestion.Explanation.Length > MaxExplanationLength)
-                                                        {
-                                                            <button class="btn btn-link p-0" @onclick="() => ShowExplanation(childQuestion.Explanation)">See more</button>
-                                                        }
-                                                    </p>
-                                                }
-                                            </div>
-                                        </div>
-                                    }
-                                </div>
-                            }
-                        </div>
+                        <QuestionComponent Question="question" ShowExplanation="ShowExplanation" />
                     }
                 </div>
-
+                <button class="btn btn-primary mt-3" @onclick="DownloadCsv">Download Answers as CSV</button>
             </div>
         </div>
     </div>
 </div>
+<style>
+    .preserve-whitespace {
+        white-space: pre-wrap;
+    }
+</style>
 @if (ShowExplanationModal)
 {
     <div class="modal fade show d-block" tabindex="-1">
@@ -106,7 +42,7 @@
                     <button type="button" class="btn-close" @onclick="CloseExplanationModal"></button>
                 </div>
                 <div class="modal-body">
-                    <p>@CurrentExplanation</p>
+                    <p class="preserve-whitespace">@CurrentExplanation</p>
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" @onclick="CloseExplanationModal">Close</button>
@@ -124,6 +60,11 @@
     private bool ShowExplanationModal { get; set; } = false;
     private string CurrentExplanation { get; set; } = string.Empty;
     private const int MaxExplanationLength = 40;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadQuestions();
+    }
 
     private void ShowExplanation(string explanation)
     {
@@ -183,5 +124,49 @@
                 }
             }
         }
+    }
+
+    private List<(string Question, string Answer)> GetAllAnswers(List<QuestionEntity> questions)
+    {
+        var answers = new List<(string Question, string Answer)>();
+
+        foreach (var question in questions)
+        {
+            answers.Add((question.Question, question.TextAnswer));
+
+            if (question.ChildQuestionsByAnswer != null &&
+            question.ChildQuestionsByAnswer.ContainsKey(question.TextAnswer))
+            {
+                var childQuestions = question.ChildQuestionsByAnswer[question.TextAnswer];
+                answers.AddRange(GetAllAnswers(childQuestions));
+            }
+        }
+
+        return answers;
+    }
+
+    private string GenerateCsvContent(List<(string Question, string Answer)> answers)
+    {
+        var csvBuilder = new StringBuilder();
+        csvBuilder.AppendLine("Question,Answer");
+
+        foreach (var (question, answer) in answers)
+        {
+            var escapedQuestion = question.Replace("\"", "\"\"").Replace("\n", " ");
+            var escapedAnswer = answer.Replace("\"", "\"\"").Replace("\n", " ");
+            csvBuilder.AppendLine($"\"{escapedQuestion}\",\"{escapedAnswer}\"");
+        }
+
+        return csvBuilder.ToString();
+    }
+
+    private async Task DownloadCsv()
+    {
+        var answers = GetAllAnswers(Questions);
+        var csvContent = GenerateCsvContent(answers);
+        var bytes = Encoding.UTF8.GetBytes(csvContent);
+        var base64 = Convert.ToBase64String(bytes);
+
+        await JS.InvokeVoidAsync("downloadFile",Option + " answers.csv", base64);
     }
 }

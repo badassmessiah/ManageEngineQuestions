@@ -1,0 +1,64 @@
+@using ManageEngineQuestions
+@inject NavigationManager NavigationManager
+
+<div class="row mt-3">
+    <div class="col-md-4 d-flex align-items-center">
+        <p>@Question.Question</p>
+    </div>
+    <div class="col-md-4 d-flex align-items-center">
+        @if (Question.Type == QuestionType.Text)
+        {
+            <input type="text" @bind="Question.TextAnswer" class="form-control" />
+        }
+        else if (Question.Type == QuestionType.Dropdown)
+        {
+            <select @bind="Question.TextAnswer" class="form-select">
+                @foreach (var option in Question.DropdownOptions)
+                {
+                    <option value="@option">@option</option>
+                }
+            </select>
+        }
+    </div>
+    <div class="col-md-4 d-flex align-items-center">
+        @if (!string.IsNullOrEmpty(Question.Explanation))
+        {
+            <p class="preserve-whitespace">@TruncateExplanation(Question.Explanation)
+                @if (Question.Explanation.Length > MaxExplanationLength)
+                {
+                    <button class="btn btn-link p-0" @onclick="() => ShowExplanation.InvokeAsync(Question.Explanation)">See more</button>
+                }
+            </p>
+        }
+    </div>
+</div>
+
+@if (Question.ChildQuestionsByAnswer != null &&
+Question.ChildQuestionsByAnswer.ContainsKey(Question.TextAnswer) &&
+Question.ChildQuestionsByAnswer[Question.TextAnswer]?.Any() == true)
+{
+    <div class="p-3 border rounded">
+        @foreach (var childQuestion in Question.ChildQuestionsByAnswer[Question.TextAnswer])
+        {
+            <QuestionComponent Question="childQuestion" ShowExplanation="ShowExplanation" />
+        }
+    </div>
+}
+
+@code {
+    [Parameter]
+    public QuestionEntity Question { get; set; }
+    [Parameter]
+    public EventCallback<string> ShowExplanation { get; set; }
+
+    private string TruncateExplanation(string explanation)
+    {
+        if (explanation.Length > MaxExplanationLength)
+        {
+            return explanation.Substring(0, MaxExplanationLength) + "...";
+        }
+        return explanation;
+    }
+
+    private const int MaxExplanationLength = 40;
+}

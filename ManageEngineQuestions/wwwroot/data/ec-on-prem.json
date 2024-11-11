@@ -1,0 +1,256 @@
+[
+    {
+        "Question": "Please select the required edition.",
+        "Explanation": "Security Edition (applicable only for On-Premises) is a bundle of Desktop Management, Mobile Device Management, Vulnerability Manager Plus, Browser Security Plus, Device Control Plus, Application Control Plus and Bitlocker Management functionalities altogether in a central console which supports managing endpoints in both LAN & WAN architecture.\n\nUEM (Unified Endpoint Management) Edition is a bundle of Desktop Management, Mobile Device Management, Modern Management for Windows 10 & OS Deployment functionalities which supports managing endpoints in both LAN & WAN architecture. Kindly refer to the below link to know the edition of Mobile Device Manager Plus (MDM) bundled with Endpoint Central different edition https://pitstop.manageengine.com/portal/en/community/topic/mdm-will-no-longer-be-an-add-on-it-will-be-now-available-in-all-editions-of-endpoint-central\n\nEnterprise Edition supports distributed architecture & is suitable for managing computers within LAN & over WAN.\n\nProfessional Edition is suitable for managing computers within LAN.",
+        "Type": "Dropdown",
+        "TextAnswer": "",
+        "DropdownOptions": ["Professional", "Enterprise", "UEM", "Security"]
+    },
+    {
+        "Question": "Do you require Secured Gateway Service?",
+        "Explanation": "Applicable only for On-Premises Endpoint Central (all editions).\n\nSecure Gateway Server is a component that will be exposed to the internet. This component acts as an intermediate between the managed roaming agents and the UEM Central Server. Refer the below link to know more about this in detail.\n\nhttps://www.manageengine.com/products/desktop-central/secure-communication-of-mobile-users-using-forwarding-server.html",
+        "Type": "Dropdown",
+        "TextAnswer": "",
+        "DropdownOptions": ["Yes", "No"]
+    },
+    {
+        "Question": "Do you require Failover Service?",
+        "Explanation": "Applicable only for On-Premises Endpoint Central (all editions).\n\nFail Over Service is to configure UEM Central to run on High Availability. Refer the below link to know more about this in detail.\n\nhttps://www.manageengine.com/products/desktop-central/failover-server.html",
+        "Type": "Dropdown",
+        "TextAnswer": "",
+        "DropdownOptions": ["Yes", "No"]
+    },
+    {
+        "Question": "Do you require the application to support Multi-Language?",
+        "Explanation": "Endpoint Central supports multiple languages. Refer the below link to know more about the Supported Languages.\n\nhttps://www.manageengine.com/products/desktop-central/supported-languages.html",
+        "Type": "Dropdown",
+        "TextAnswer": "",
+        "DropdownOptions": [
+            "Only English",
+            "Yes"
+        ]
+    },
+    {
+        "Question" : "Number of Endpoints to be managed",
+        "Explanation" : "Applicable for On-Premise & On Cloud Endpoint Central , which is licensed based on number of Endpoints that include Computers (PC/Laptops/Desktops)  & Mobile Devices for Desktop Management, Mobile Device Management & Modern Management for Windows 10 and macOS devices (only with UEM edition)  so on.\n\nThis is a floating license. If 100 endpoints license is purchased, it can be used across the bundled modules.",
+        "Type" : "Text",
+        "TextAnswer" : "25"
+    },
+    {
+        "Question" : "Number  of  Servers to be managed",
+        "Explanation" : "Applicable for all Editions. Licensed based on the number of  Servers for managing the functionalities like Patch Management, Software Deployment, etc.",
+        "Type" : "Text",
+        "TextAnswer" : "25"
+    },
+    {
+        "Question" : "Number of Users required to access the application",
+        "Explanation" : "Applicable for all Editions.\n\nLicensed based on the number of users who need access to the application for managing the functionalities like Patch Management, Software Deployment, etc.",
+        "Type" : "Text",
+        "TextAnswer" : "1"
+    },
+    {
+        "Question" : "Do you require OS Deployment add-on?",
+        "Explanation" : "",
+        "Type" : "Dropdown",
+        "DropdownOptions" : ["No","Yes"],
+        "ChildQuestionsByAnswer" : {
+            "No" : [],
+            "Yes" : [
+                {
+                    "Question" : "Number of Workstations",
+                    "Explanation" : "",
+                    "Type" : "Text",
+                    "TextAnswer" : "25"
+                },
+                {
+                    "Question": "Number of Servers",
+                    "Explanation": "",
+                    "Type": "Text",
+                    "TextAnswer": "25"
+                }
+            ]
+        }
+    },
+    {
+        "Question" : "Do you require Anti-Ransomware add-on?",
+        "Explanation" : "",
+        "Type" : "Dropdown",
+        "DropdownOptions" : ["No","Yes"],
+        "ChildQuestionsByAnswer" : {
+            "No" : [],
+            "Yes" : [
+                {
+                    "Question" : "Number of Workstations",
+                    "Explanation" : "",
+                    "Type" : "Text",
+                    "TextAnswer" : "25"
+                }
+            ]
+        }
+    },
+    {
+        "Question" : "Do you require Endpoint Security add-on?",
+        "Explanation" : "Applicable for Professional, Enterprise & UEM  edition of Endpoint Central (On-Premises Only).\n\nEndpoint Security add-on is the bundle of:\n\nVulnerability Manager Plus,\n\nBrowser Security Plus,\n\nDevice Control Plus,\n\nApplication Control Plus and Bitlocker Management.\n\nYou have a choice to choose the Endpoint Security add-on to include all the security features in a single add-on or you can choose the required components individually.\n\nRefer to the link below to know more about this add-on, which is licensed based on total number of workstations.\n\nhttps://www.manageengine.com/products/desktop-central/endpoint-security-features.html",
+        "Type" : "Dropdown",
+        "DropdownOptions" : ["No","Yes Full","Yes Partial"],
+        "ChildQuestionsByAnswer" : {
+            "No" : [],
+            "Yes Full" : [
+                {
+                    "Question" : "Total Number of Workstations & Servers",
+                    "Explanation" : "test test test test test test test test test test test test test test",
+                    "Type" : "Text",
+                    "TextAnswer" : "50"
+                }
+            ],
+            "Yes Partial" : [
+                {
+                    "Question" : "Do you require Vulnerability Manager Plus?",
+                    "Explanation" : "",
+                    "Type" : "Dropdown",
+                    "DropdownOptions" : ["No","Yes"],
+                    "ChildQuestionsByAnswer" : {
+                        "No" : [],
+                        "Yes" : [
+                            {
+                                "Question" : "Number of Workstations & Servers",
+                                "Explanation" : "",
+                                "Type" : "Text",
+                                "TextAnswer" : "50"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Question": "Do you require Browser Security Plus?",
+                    "Explanation": "",
+                    "Type": "Dropdown",
+                    "DropdownOptions": [
+                        "No",
+                        "Yes"
+                    ],
+                    "ChildQuestionsByAnswer": {
+                        "No": [],
+                        "Yes": [
+                            {
+                                "Question": "Number of Computers",
+                                "Explanation": "",
+                                "Type": "Text",
+                                "TextAnswer": "25"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Question": "Do you require Device Control Plus?",
+                    "Explanation": "",
+                    "Type": "Dropdown",
+                    "DropdownOptions": [
+                        "No",
+                        "Yes"
+                    ],
+                    "ChildQuestionsByAnswer": {
+                        "No": [],
+                        "Yes": [
+                            {
+                                "Question": "Number of Workstations",
+                                "Explanation": "",
+                                "Type": "Text",
+                                "TextAnswer": "25"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Question": "Do you require Bitlocker Management?",
+                    "Explanation": "",
+                    "Type": "Dropdown",
+                    "DropdownOptions": [
+                        "No",
+                        "Yes"
+                    ],
+                    "ChildQuestionsByAnswer": {
+                        "No": [],
+                        "Yes": [
+                            {
+                                "Question": "Number of Computers",
+                                "Explanation": "",
+                                "Type": "Text",
+                                "TextAnswer": "25"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Question": "Do you require Application Control Plus?",
+                    "Explanation": "",
+                    "Type": "Dropdown",
+                    "DropdownOptions": [
+                        "No",
+                        "Yes"
+                    ],
+                    "ChildQuestionsByAnswer": {
+                        "No": [],
+                        "Yes": [
+                            {
+                                "Question": "Number of Workstations",
+                                "Explanation": "",
+                                "Type": "Text",
+                                "TextAnswer": "25"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Question": "Do you require Endpoint DLP?",
+                    "Explanation": "",
+                    "Type": "Dropdown",
+                    "DropdownOptions": [
+                        "No",
+                        "Yes"
+                    ],
+                    "ChildQuestionsByAnswer": {
+                        "No": [],
+                        "Yes": [
+                            {
+                                "Question": "Number of Workstations",
+                                "Explanation": "",
+                                "Type": "Text",
+                                "TextAnswer": "50"
+                            }
+                        ]
+                    }
+                }
+                
+            ]
+
+        }
+    },
+    {
+        "Question" : "Choose subscription model",
+        "Explanation" : "",
+        "Type" : "Dropdown",
+        "DropdownOptions" : [
+            "Annual Subscription",
+            "Perpetual License"
+        ],
+        "ChildQuestionsByAnswer" : {
+            "Annual Subscription" : [
+                {
+                    "Question" : "Specify subscription years",
+                    "Explanation" : "",
+                    "Type" : "Text",
+                    "TextAnswer" : "1"
+                }
+            ],
+            "Perpetual License" : [
+                {
+                    "Question" : "Specify AMS years",
+                    "Explanation" : "Annual Maintenance & Support (AMS):\n\n1st Year AMS to be purchased along with the Perpetual License.\n\nFor the subsequent years, you can purchase separately.\n\nYou also have an option to purchase AMS for more than 1 year along with the perpetual license.\n\nThe Support Fee (AMS) includes Phone/E-Mail Support, Service Packs, Bug Fixes, Minor Updates & Major Upgrades.",
+                    "Type" : "Text",
+                    "TextAnswer" : "1"
+                }
+            ]
+        }
+    }
+]

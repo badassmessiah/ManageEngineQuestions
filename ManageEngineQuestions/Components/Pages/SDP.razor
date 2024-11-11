@@ -1,8 +1,9 @@
 @page "/sdp"
+@using System.Text
 @rendermode InteractiveServer
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
-
+@inject IJSRuntime JS
 <Back />
 
 <div class="container">
@@ -153,8 +154,10 @@
                                 }
                             </div>
                         }
+                        
                     }
                 </div>
+                <button class="btn btn-primary mt-3" @onclick="DownloadCsv">Download Answers as CSV</button>
             </div>
         </div>
     </div>
@@ -287,5 +290,60 @@
             return explanation.Substring(0, MaxExplanationLength) + "...";
         }
         return explanation;
+    }
+
+    private List<(string Question, string Answer)> GetAllAnswers()
+    {
+        var answers = new List<(string Question, string Answer)>();
+        
+        // Collect answers from main questions
+        answers.AddRange(CollectAnswers(Questions));
+        
+        // Collect answers from ESM instances if any
+        foreach (var esmInstance in ESMInstances)
+        {
+            // Add the instance name as a separate entry
+            answers.Add(($"ESM Instance: {esmInstance.Name}", ""));
+            answers.AddRange(CollectAnswers(esmInstance.Questions));
+        }
+        
+        return answers;
+    }
+
+    private List<(string Question, string Answer)> CollectAnswers(List<QuestionEntity> questions)
+    {
+        var answers = new List<(string Question, string Answer)>();
+        foreach (var question in questions)
+        {
+            answers.Add((question.Question, question.TextAnswer));
+            if (question.ChildQuestionsByAnswer != null &&
+                question.ChildQuestionsByAnswer.ContainsKey(question.TextAnswer))
+            {
+                var childQuestions = question.ChildQuestionsByAnswer[question.TextAnswer];
+                answers.AddRange(CollectAnswers(childQuestions));
+            }
+        }
+        return answers;
+    }
+    private string GenerateCsvContent(List<(string Question, string Answer)> answers)
+    {
+        var csvBuilder = new StringBuilder();
+        csvBuilder.AppendLine("Question,Answer");
+        foreach (var (question, answer) in answers)
+        {
+            var escapedQuestion = question.Replace("\"", "\"\"").Replace("\n", " ");
+            var escapedAnswer = answer.Replace("\"", "\"\"").Replace("\n", " ");
+            csvBuilder.AppendLine($"\"{escapedQuestion}\",\"{escapedAnswer}\"");
+        }
+        return csvBuilder.ToString();
+    }
+    private async Task DownloadCsv()
+    {
+        var answers = GetAllAnswers();
+        var csvContent = GenerateCsvContent(answers);
+        var bytes = Encoding.UTF8.GetBytes(csvContent);
+        var base64 = Convert.ToBase64String(bytes);
+
+        await JS.InvokeVoidAsync("downloadFile", $"{Option} answers.csv", base64);
     }
 }
