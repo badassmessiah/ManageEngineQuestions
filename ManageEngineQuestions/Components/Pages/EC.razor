@@ -8,12 +8,180 @@
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="col">
-
+                <p class="text-center">Choose ServiceDesk Hosting Model</p>
                 <div class="d-flex justify-content-center align-items-center">
-
+                    <select @bind="Option" @bind:event="oninput" @onchange="OnOptionChanged" class="form-select me-2">
+                        <option value="On-Prem">On-Prem</option>
+                        <option value="Cloud">Cloud</option>
+                    </select>
+                </div>
+                <div>
+                    @foreach (var question in Questions)
+                    {
+                        <div class="row mt-3">
+                            <div class="col-md-4 d-flex allign-items-center">
+                                <p>@question.Question</p>
+                            </div>
+                            <div class="col-md-4 d-flex align-items-center">
+                                @if (question.Type == QuestionType.Text)
+                                {
+                                    <input type="text" @bind="question.TextAnswer" class="form-control" />
+                                }
+                                else if (question.Type == QuestionType.Dropdown)
+                                {
+                                    <select @bind="question.TextAnswer" class="form-select">
+                                        @foreach (var option in question.DropdownOptions)
+                                        {
+                                            <option value="@option">@option</option>
+                                        }
+                                    </select>
+                                }
+                            </div>
+                            <div class="col-md-4 d-flex align-items-center">
+                                @if (!string.IsNullOrEmpty(question.Explanation))
+                                {
+                                    <p>@TruncateExplanation(question.Explanation)
+                                        @if (question.Explanation.Length > MaxExplanationLength)
+                                        {
+                                            <button class="btn btn-link p-0"
+                                                @onclick="() => ShowExplanation(question.Explanation)">See more</button>
+                                        }
+                                    </p>
+                                }
+                            </div>
+                            @if (question.ChildQuestionsByAnswer.ContainsKey(question.TextAnswer) && question.ChildQuestionsByAnswer[question.TextAnswer]?.Any() == true)
+                            {
+                                <div class="p-3 border rounded">
+                                    @foreach (var childQuestion in question.ChildQuestionsByAnswer[question.TextAnswer])
+                                    {
+                                        <div class="row mt-3">
+                                            <div class="col-md-4 d-flex align-items-center">
+                                                <p>@childQuestion.Question</p>
+                                            </div>
+                                            <div class="col-md-4 d-flex align-items-center">
+                                                @if (childQuestion.Type == QuestionType.Text)
+                                                {
+                                                    <input type="text" @bind="childQuestion.TextAnswer" class="form-control" />
+                                                }
+                                                else if (childQuestion.Type == QuestionType.Dropdown)
+                                                {
+                                                    <select @bind="childQuestion.TextAnswer" class="form-select">
+                                                        @foreach (var option in childQuestion.DropdownOptions)
+                                                        {
+                                                            <option value="@option">@option</option>
+                                                        }
+                                                    </select>
+                                                }
+                                            </div>
+                                            <div class="col-md-4 d-flex align-items-center">
+                                                @if (!string.IsNullOrEmpty(childQuestion.Explanation))
+                                                {
+                                                    <p>@TruncateExplanation(childQuestion.Explanation)
+                                                        @if (childQuestion.Explanation.Length > MaxExplanationLength)
+                                                        {
+                                                            <button class="btn btn-link p-0" @onclick="() => ShowExplanation(childQuestion.Explanation)">See more</button>
+                                                        }
+                                                    </p>
+                                                }
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    }
                 </div>
 
             </div>
         </div>
     </div>
 </div>
+@if (ShowExplanationModal)
+{
+    <div class="modal fade show d-block" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Details</h5>
+                    <button type="button" class="btn-close" @onclick="CloseExplanationModal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>@CurrentExplanation</p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" @onclick="CloseExplanationModal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+
+        
+}
+@code {
+    private string Option = "On-Prem";
+    private List<QuestionEntity> Questions { get; set; } = new();
+    private bool ShowExplanationModal { get; set; } = false;
+    private string CurrentExplanation { get; set; } = string.Empty;
+    private const int MaxExplanationLength = 40;
+
+    private void ShowExplanation(string explanation)
+    {
+        CurrentExplanation = explanation;
+        ShowExplanationModal = true;
+    }
+
+    private void CloseExplanationModal()
+    {
+        ShowExplanationModal = false;
+        CurrentExplanation = string.Empty;
+    }
+    private async Task OnOptionChanged()
+    {
+        await LoadQuestions();
+    }
+    
+    private string TruncateExplanation(string explanation)
+    {
+        if (explanation.Length > MaxExplanationLength)
+        {
+            return explanation.Substring(0, MaxExplanationLength) + "...";
+        }
+        return explanation;
+    }
+    public async Task LoadQuestions()
+    {
+        try
+        {
+            var baseUri = NavigationManager.BaseUri;
+            var jsonFile = Option == "On-Prem" ? "ec-on-prem.json" : "ec-cloud.json";
+            var jsonUri = $"{baseUri}data/{jsonFile}";
+            var json = await Http.GetStringAsync(jsonUri);
+            Questions = JsonSerializer.Deserialize<List<QuestionEntity>>(json) ?? new();
+            SetDropdownDefaults(Questions);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+    private void SetDropdownDefaults(List<QuestionEntity> questions)
+    {
+        foreach (var question in questions)
+        {
+            if (question.Type == QuestionType.Dropdown && string.IsNullOrEmpty(question.TextAnswer) &&
+            question.DropdownOptions.Count > 0)
+            {
+                question.TextAnswer = question.DropdownOptions[0];
+            }
+            if (question.ChildQuestionsByAnswer != null)
+            {
+                foreach (var childQuestions in question.ChildQuestionsByAnswer.Values)
+                {
+                    SetDropdownDefaults(childQuestions);
+                }
+            }
+        }
+    }
+}
