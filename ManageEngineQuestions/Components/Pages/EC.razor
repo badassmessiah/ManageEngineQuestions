@@ -167,6 +167,6 @@
         var bytes = Encoding.UTF8.GetBytes(csvContent);
         var base64 = Convert.ToBase64String(bytes);
 
-        await JS.InvokeVoidAsync("downloadFile",Option + " answers.csv", base64);
+        await JS.InvokeVoidAsync("downloadFile", $"EC {Option}.csv", base64);
     }
 }
