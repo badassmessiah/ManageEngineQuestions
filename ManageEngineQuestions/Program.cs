@@ -13,6 +13,17 @@ public class Program
 
         builder.Services.AddHttpClient();
 
+        if (!builder.Environment.IsDevelopment())
+        {
+            builder.WebHost.ConfigureKestrel(options => 
+            {
+                options.ListenLocalhost(5000, listenOptions => 
+                {
+                    listenOptions.UseHttps();
+                });
+            });
+        }
+
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
